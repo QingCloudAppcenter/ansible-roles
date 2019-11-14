@@ -1,0 +1,63 @@
+---
+- name: set var
+  set_fact:
+    keepalived_version: 2.0.19
+
+- name: prepare tmp download dir
+  file:
+    path: "{{ role_path }}/files/tmp"
+    state: directory
+  delegate_to: localhost
+
+- name: download src
+  vars:
+    dest_path: "{{ role_path }}/files/tmp/keepalived-{{ keepalived_version }}.tgz"
+  get_url:
+    url: https://www.keepalived.org/software/keepalived-{{ keepalived_version }}.tar.gz
+    dest: "{{ dest_path }}"
+  delegate_to: localhost
+  when: dest_path is not exists
+
+- name: install build tools
+  apt:
+    name: ["curl", "gcc", "libssl-dev", "libnl-3-dev", "libnl-genl-3-dev", "libsnmp-dev"]
+  delegate_to: localhost
+
+- name: extract src
+  unarchive:
+    src: "{{ role_path }}/files/tmp/keepalived-{{ keepalived_version }}.tgz"
+    dest: "{{ role_path }}/files/tmp"
+    creates: "{{ role_path }}/files/tmp/keepalived-{{ keepalived_version }}/Makefile"
+  delegate_to: localhost
+
+- name: build Keepalived
+  vars:
+    build_path: "{{ role_path }}/files/tmp/keepalived-{{ keepalived_version }}-bin"
+  shell: |
+    ./configure --prefix={{ build_path }}
+    make
+    make install
+  args:
+    chdir: "{{ role_path }}/files/tmp/keepalived-{{ keepalived_version }}"
+    creates: "{{ build_path }}/sbin/keepalived"
+  delegate_to: localhost
+
+- name: prepare bin dir
+  file:
+    path: /opt/keepalived/{{ keepalived_version }}
+    state: directory
+
+- name: install
+  copy:
+    src: "{{ role_path }}/files/tmp/keepalived-{{ keepalived_version }}-bin/"
+    dest: /opt/keepalived/{{ keepalived_version }}
+    owner: root
+    group: root
+    mode: preserve
+    directory_mode: u=rwx,g=rx,o=
+
+- name: create symbolic link - {{ role_name }}
+  file:
+    src: /opt/keepalived/{{ keepalived_version }}
+    dest: "/opt/keepalived/current"
+    state: link

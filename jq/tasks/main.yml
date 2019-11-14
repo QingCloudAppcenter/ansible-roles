@@ -10,10 +10,13 @@
   delegate_to: localhost
 
 - name: download jq
+  vars:
+    dest_path: "{{ role_path }}/files/tmp/jq-{{ jq_version }}"
   get_url:
     url: https://github.com/stedolan/jq/releases/download/jq-{{ jq_version }}/jq-linux64
-    dest: "{{ role_path }}/files/tmp/jq-{{ jq_version }}"
+    dest: "{{ dest_path }}"
   delegate_to: localhost
+  when: dest_path is not exists
 
 - name: install jq
   copy:

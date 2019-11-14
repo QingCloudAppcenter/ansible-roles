@@ -1,0 +1,35 @@
+---
+- name: install ppa tools
+  apt:
+    name: ['software-properties-common']
+    update_cache: no
+
+- name: install ppa
+  apt_repository:
+    repo: ppa:vbernat/haproxy-2.0
+
+- name: install HAProxy
+  apt:
+    name: haproxy=2.0.*
+    state: present
+    update_cache: yes
+
+- name: copy conf files
+  copy:
+    src: "{{ role_path }}/files/{{ item }}"
+    dest: /{{ item }}
+    owner: root
+    group: root
+    mode: u=rw,go=r
+  with_items:
+    - etc/haproxy/errors/
+    - etc/logrotate.d/
+    - etc/rsyslog.d/
+    - lib/systemd/system/
+
+- name: disable haproxy auto start
+  systemd:
+    name: haproxy
+    state: stopped
+    enabled: no # !!!
+    masked: yes
