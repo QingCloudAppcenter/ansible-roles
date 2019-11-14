@@ -32,10 +32,6 @@
     dest: /usr/bin/appctl
     state: link
 
-- name: install confd files
-  include_role:
-    name: confd-files
-
 - name: set up dev env
   copy:
     dest: /opt/app/bin/envs/appdev.env

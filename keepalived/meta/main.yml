@@ -1,8 +1,8 @@
 galaxy_info:
-  role_name: jq
-  role_version: 1.0.1
+  role_name: keepalived
+  role_version: 1.0.0
   author: Hongliang Wang
-  description: installs jq
+  description: installs keepalived
 
   license: Apache
 
