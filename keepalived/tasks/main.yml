@@ -61,3 +61,16 @@
     src: /opt/keepalived/{{ keepalived_version }}
     dest: "/opt/keepalived/current"
     state: link
+
+- name: copy conf files
+  copy:
+    src: "{{ role_path }}/files/{{ item }}"
+    dest: /{{ item }}
+    owner: root
+    group: svc
+    mode: preserve
+  with_items:
+    - etc/logrotate.d/
+    - etc/rsyslog.d/
+    - lib/systemd/system/
+    - opt/app/
