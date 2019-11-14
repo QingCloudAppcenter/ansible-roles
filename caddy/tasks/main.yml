@@ -56,18 +56,9 @@
     owner: root
     group: svc
     mode: preserve
-    directory_mode: u=rwx,g=rx,o=
-  loop:
-    - opt/app/
-  loop_control:
-    loop_var: file_path
-
-- name: transfer files
-  copy:
-    src: files/{{ file_path }}
-    dest: /{{ file_path }}
   loop:
     - lib/systemd/system/
+    - opt/app/
   loop_control:
     loop_var: file_path
 
