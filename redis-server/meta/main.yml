@@ -1,8 +1,8 @@
 galaxy_info:
-  role_name: caddy
-  role_version: 1.0.3
+  role_name: redis-server
+  role_version: 1.0.0
   author: Hongliang Wang
-  description: installs caddy server
+  description: installs redis server
 
   license: Apache
 
