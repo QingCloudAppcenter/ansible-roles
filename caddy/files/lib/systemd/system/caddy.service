@@ -3,7 +3,7 @@ Description=Caddy HTTP/2 web server
 Documentation=https://caddyserver.com/docs
 After=network-online.target
 Wants=network-online.target
-ConditionFileNotEmpty=/opt/app/conf/caddy/Caddyfile
+ConditionFileNotEmpty=/opt/app/conf/caddy/caddyfile
 
 [Service]
 Restart=on-abnormal

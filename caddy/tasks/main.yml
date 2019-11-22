@@ -1,7 +1,7 @@
 ---
 - name: set up variables
   set_fact:
-    caddy_version: 1.0.3
+    caddy_version: 1.0.4
 
 - name: prepare service group
   group:
@@ -54,7 +54,7 @@
     src: files/{{ file_path }}
     dest: /{{ file_path }}
     owner: root
-    group: svc
+    group: root
     mode: preserve
   loop:
     - lib/systemd/system/
