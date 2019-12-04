@@ -1,8 +1,8 @@
 galaxy_info:
-  role_name: app-agent
-  role_version: 1.0.1
+  role_name: docker
+  role_version: 1.0.0
   author: Hongliang Wang
-  description: installs app agent
+  description: installs docker
 
   license: Apache
 

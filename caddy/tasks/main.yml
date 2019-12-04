@@ -43,6 +43,7 @@
     dest: "{{ dest_path }}"
   delegate_to: localhost
   when: dest_path is not exists
+  run_once: True
 
 - name: install caddy
   unarchive:
