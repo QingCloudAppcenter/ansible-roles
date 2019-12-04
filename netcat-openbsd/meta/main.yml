@@ -1,8 +1,8 @@
 galaxy_info:
-  role_name: jq
-  role_version: 1.0.2
+  role_name: netcat-openbsd
+  role_version: 1.0.0
   author: Hongliang Wang
-  description: installs jq
+  description: installs netcat-openbsd (nc)
 
   license: Apache
 
