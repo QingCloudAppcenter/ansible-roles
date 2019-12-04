@@ -1,0 +1,6 @@
+---
+- name: install java and tools
+  apt:
+    name: ['openjdk-8-jdk', 'openjdk-8-dbg']
+    state: present
+    update_cache: yes

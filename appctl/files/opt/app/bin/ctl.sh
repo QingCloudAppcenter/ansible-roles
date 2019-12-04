@@ -91,7 +91,7 @@ checkActive() {
 }
 
 checkEndpoint() {
-  local host=$MY_IP proto=${1%:*} port=${1#*:}
+  local proto=${1%:*} host=${2-$MY_IP} port=${1#*:}
   if [ "$proto" = "tcp" ]; then
     nc -z -w5 $host $port
   elif [ "$proto" = "udp" ]; then
