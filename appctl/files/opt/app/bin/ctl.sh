@@ -77,7 +77,7 @@ getServices() {
   if [ "$1" = "-a" ]; then
     echo $SERVICES
   else
-    echo $SERVICES | xargs -n1 | awk -F/ '$2=="true"'
+    echo $SERVICES | xargs -n1 | awk -F/ '$2=="true"' | xargs
   fi
 }
 
