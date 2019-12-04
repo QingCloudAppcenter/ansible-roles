@@ -1,0 +1,9 @@
+---
+- name: remove default nc
+  apt:
+    name: netcat-openbsd
+    state: absent
+
+- name: install nc
+  apt:
+    deb: http://archive.ubuntu.com/ubuntu/pool/main/n/netcat-openbsd/netcat-openbsd_1.105-7ubuntu1_amd64.deb
