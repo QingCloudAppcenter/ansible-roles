@@ -1,0 +1,53 @@
+---
+- name: define vars
+  set_fact:
+    work_dir: "{{ role_path }}/files/tmp/with-upload-module"
+
+- name: prepare tmp compile dir
+  file:
+    path: "{{ work_dir }}"
+    state: directory
+  delegate_to: localhost
+  run_once: True
+
+- name: compile Caddy with upload module
+  args:
+    chdir: "{{ work_dir }}"
+    creates: "{{ work_dir }}/caddy-{{ caddy_version }}"
+  environment:
+    GO111MODULE: "on"
+  shell: |
+    # From https://github.com/wmark/http.upload/issues/38#issuecomment-529623377
+    cat > go.mod << MOD_EOF
+    module caddy
+    require (
+      blitznote.com/src/http.upload/v3 v{{ mod_upload_version }}
+      github.com/caddyserver/caddy v{{ caddy_version }}
+    )
+    MOD_EOF
+
+    cat > main.go << EOF
+    package main
+    
+    import (
+      "github.com/caddyserver/caddy/caddy/caddymain"
+    
+      _ "blitznote.com/src/http.upload/v3"
+    )
+    
+    func main() {
+      caddymain.Run()
+    }
+    EOF
+
+    gofmt -w main.go
+    go mod tidy
+    go build -tags "caddyserver0.9 caddyserver1.0" -o caddy-{{ caddy_version }}
+  delegate_to: localhost
+  run_once: True
+
+- name: install
+  copy:
+    src: "{{ work_dir }}/caddy-{{ caddy_version }}"
+    dest: /opt/caddy/current/caddy
+    mode: 755

@@ -1,8 +1,4 @@
 ---
-- name: set up variables
-  set_fact:
-    caddy_version: 1.0.4
-
 - name: prepare service group
   group:
     name: svc
@@ -29,26 +25,13 @@
     dest: /opt/caddy/current
     state: link
 
-- name: prepare tmp download dir
-  file:
-    path: "{{ role_path }}/files/tmp"
-    state: directory
-  delegate_to: localhost
+- name: compile with plugins
+  include_tasks: compile-and-install.yml
+  when: caddy_plugins is defined
 
-- name: download caddy binary
-  vars:
-    dest_path: "{{ role_path }}/files/tmp/caddy-{{ caddy_version }}.tgz"
-  get_url:
-    url: https://github.com/caddyserver/caddy/releases/download/v{{ caddy_version }}/caddy_v{{ caddy_version }}_linux_amd64.tar.gz
-    dest: "{{ dest_path }}"
-  delegate_to: localhost
-  when: dest_path is not exists
-  run_once: True
-
-- name: install caddy
-  unarchive:
-    src: "{{ role_path }}/files/tmp/caddy-{{ caddy_version }}.tgz"
-    dest: /opt/caddy/current
+- name: download official prebuilt package
+  include_tasks: install-prebuilt.yml
+  when: caddy_plugins is undefined
 
 - name: transfer files
   copy:
