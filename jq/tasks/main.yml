@@ -22,5 +22,5 @@
 - name: install jq
   copy:
     src: "{{ role_path }}/files/tmp/jq-{{ jq_version }}"
-    dest: /usr/local/bin/jq
+    dest: /usr/bin/jq
     mode: 0755
