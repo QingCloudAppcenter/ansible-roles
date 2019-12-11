@@ -27,7 +27,7 @@
 
 - name: install
   copy:
-    src: "{{ path.src }}/"
+    src: "{{ ansible_parent_role_paths[0] }}/files/{{ path.src }}/"
     dest: /etc/confd/{{ path.dest }}/
     owner: root
     group: root
