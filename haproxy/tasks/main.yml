@@ -11,8 +11,15 @@
 - name: install HAProxy
   apt:
     name: haproxy=2.0.*
+    policy_rc_d: 101
     state: present
     update_cache: yes
+
+- name: add to svc group
+  user:
+    name: haproxy
+    groups: svc
+    append: yes
 
 - name: copy conf files
   copy:
@@ -32,5 +39,5 @@
   systemd:
     name: haproxy
     state: stopped
-    enabled: no # !!!
+    enabled: no
     masked: yes
