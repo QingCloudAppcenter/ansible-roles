@@ -1,0 +1,54 @@
+---
+- name: set vars
+  set_fact:
+    local_path: "{{ role_path }}/files/tmp/nodejs-{{ nodejs_version }}.tar.xz"
+
+- name: prepare download dir
+  file:
+    path: "{{ role_path }}/files/tmp"
+    state: directory
+  delegate_to: localhost
+
+- stat:
+    path: "{{ local_path }}"
+  register: pkg_file
+  delegate_to: localhost
+
+- name: Download reusable binaries locally
+  get_url:
+    url: https://nodejs.org/dist/v{{ nodejs_version }}/node-v{{ nodejs_version }}-linux-x64.tar.xz
+    dest: "{{ local_path }}"
+  delegate_to: localhost
+  when: pkg_file.stat.exists == False
+
+- name: prepare install dir
+  file:
+    path: /opt/nodejs/{{ nodejs_version }}
+    state: directory
+
+- name: link install dir
+  file:
+    src: /opt/nodejs/{{ nodejs_version }}
+    dest: /opt/nodejs/current
+    state: link
+
+- name: install nodejs
+  unarchive:
+    src: "{{ local_path }}"
+    dest: /opt/nodejs/{{ nodejs_version }}
+    owner: root
+    group: root
+    extra_opts:
+    - --strip-components=1
+
+- name: add to path
+  file:
+    src: /opt/nodejs/current/bin/{{ file_name }}
+    dest: /usr/bin/{{ file_name }}
+    state: link
+  loop:
+  - node
+  - npm
+  - npx
+  loop_control:
+    loop_var: file_name
