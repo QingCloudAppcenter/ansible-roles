@@ -13,6 +13,7 @@
 EC_CHECK_INACTIVE=200
 EC_CHECK_PORT_ERR=201
 EC_CHECK_PROTO_ERR=202
+EC_ENV_ERR=203
 
 command=$1
 args="${@:2}"
@@ -71,6 +72,10 @@ applyEnvFiles() {
 applyRoleScripts() {
   local scriptFile=/opt/app/bin/node/$NODE_CTL.sh
   if [ -f "$scriptFile" ]; then . $scriptFile; fi
+}
+
+checkEnv() {
+  test -n "$1"
 }
 
 getServices() {
@@ -142,6 +147,10 @@ restartSvc() {
 
 ### app management
 
+_preCheck() {
+  checkEnv "$MY_IP"
+}
+
 _initNode() {
   rm -rf /data/lost+found
   install -d -o syslog -g svc /data/appctl/logs
@@ -192,4 +201,5 @@ applyRoleScripts
 
 set -eo pipefail
 
+execute preCheck
 execute $command $args

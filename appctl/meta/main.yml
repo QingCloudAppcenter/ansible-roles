@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: appctl
-  role_version: 1.0.3
+  role_version: 1.0.4
   author: Hongliang Wang
   description: installs appctl
 
