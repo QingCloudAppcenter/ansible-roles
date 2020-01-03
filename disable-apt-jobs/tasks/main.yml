@@ -1,0 +1,16 @@
+---
+- name: disable apt auto upgrade
+  systemd:
+    name: "{{ svc_name }}"
+    state: stopped
+    masked: yes
+  loop:
+  - apt-daily.timer
+  - apt-daily.service
+  - apt-daily-upgrade.timer
+  - apt-daily-upgrade.service
+  loop_control:
+    loop_var: svc_name
+
+- name: fix apt issues
+  shell: dpkg --configure -a
