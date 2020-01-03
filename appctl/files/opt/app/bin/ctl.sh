@@ -118,7 +118,7 @@ initSvc() {
   systemctl unmask -q ${1%%/*}
 }
 
-checkSvc() {
+_checkSvc() {
   checkActive ${1%%/*} || {
     log "Service '$1' is inactive."
     return $EC_CHECK_INACTIVE
@@ -159,13 +159,13 @@ _initNode() {
 
 _revive() {
   local svc; for svc in $(getServices); do
-    checkSvc $svc || restartSvc $svc || log "ERROR: failed to restart '$svc' ($?)."
+    execute checkSvc $svc || restartSvc $svc || log "ERROR: failed to restart '$svc' ($?)."
   done
 }
 
 _check() {
   local svc; for svc in $(getServices); do
-    checkSvc $svc
+    execute checkSvc $svc
   done
 }
 
