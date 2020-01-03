@@ -1,8 +1,8 @@
 galaxy_info:
-  role_name: java
-  role_version: 1.0.1
+  role_name: etcd
+  role_version: 1.0.0
   author: Hongliang Wang
-  description: installs java and debug tools
+  description: installs etcd
 
   license: Apache
 

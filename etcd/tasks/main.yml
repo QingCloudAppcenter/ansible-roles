@@ -1,0 +1,78 @@
+---
+- name: set vars
+  set_fact:
+    etcd_version: 3.3.18
+
+- name: prepare download dir
+  file:
+    path: "{{ role_path }}/files/tmp"
+    state: directory
+  delegate_to: localhost
+
+- name: download reusable binaries locally
+  vars:
+    dest_path: "{{ role_path }}/files/tmp/etcd-{{ etcd_version }}.tgz"
+  get_url:
+    url: "https://github.com/etcd-io/etcd/releases/download/v{{ etcd_version }}/etcd-v{{ etcd_version }}-linux-amd64.tar.gz"
+    dest: "{{ dest_path }}"
+  delegate_to: localhost
+  when: dest_path is not exists
+  run_once: True
+
+- name: prepare service group
+  group:
+    name: svc
+    state: present
+
+- name: prepare service user
+  user:
+    name: etcd
+    groups: svc
+    shell: /sbin/nologin
+    create_home: no
+    append: yes
+    comment: "Service User"
+    state: present
+
+- name: prepare dir
+  file:
+    path: /opt/etcd/{{ etcd_version }}
+    state: directory
+
+- name: link binary dir
+  file:
+    src: "{{ etcd_version }}"
+    dest: /opt/etcd/current
+    state: link
+
+- name: install binaries
+  unarchive:
+    src: "{{ role_path }}/files/tmp/etcd-{{ etcd_version }}.tgz"
+    dest: /opt/etcd/current/
+    extra_opts:
+    - --strip-components=1
+
+- name: transfer files
+  copy:
+    src: files/{{ file_path }}
+    dest: /{{ file_path }}
+    owner: root
+    group: root
+    mode: preserve
+  loop:
+    - lib/systemd/system/
+    - opt/app/
+  loop_control:
+    loop_var: file_path
+
+- name: add commands to PATH
+  copy:
+    dest: /etc/profile.d/etcd-path.sh
+    content: 'PATH=$PATH:/opt/etcd/current'
+
+- name: mask etcd service
+  systemd:
+    name: etcd
+    enabled: no
+    masked: yes
+    state: stopped
