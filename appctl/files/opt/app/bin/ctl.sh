@@ -102,7 +102,7 @@ checkEndpoint() {
   elif [ "$proto" = "udp" ]; then
     nc -z -u -q5 -w5 $host $port
   elif [ "$proto" = "http" ]; then
-    local code="$(curl -s -o /dev/null -w "%{http_code}" $host:$port)"
+    local code="$(curl -s -m5 -o /dev/null -w "%{http_code}" $host:$port)"
     [[ "$code" =~ ^(200|302|401|403|404)$ ]]
   else
     return $EC_CHECK_PROTO_ERR
