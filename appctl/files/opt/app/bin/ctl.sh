@@ -14,6 +14,8 @@ EC_CHECK_INACTIVE=200
 EC_CHECK_PORT_ERR=201
 EC_CHECK_PROTO_ERR=202
 EC_ENV_ERR=203
+EC_CHECK_HTTP_REQ_ERR=204
+EC_CHECK_HTTP_CODE_ERR=205
 
 command=$1
 args="${@:2}"
@@ -99,11 +101,16 @@ checkEndpoint() {
   local proto=${1%:*} host=${2-$MY_IP} port=${1#*:}
   if [ "$proto" = "tcp" ]; then
     nc -z -w5 $host $port
-  elif [ "$proto" = "udp" ]; then
-    nc -z -u -q5 -w5 $host $port
   elif [ "$proto" = "http" ]; then
-    local code="$(curl -s -m5 -o /dev/null -w "%{http_code}" $host:$port)"
-    [[ "$code" =~ ^(200|302|401|403|404)$ ]]
+    local code
+    code="$(curl -s -m5 -o /dev/null -w "%{http_code}" $host:$port)" || {
+      log "ERROR: HTTP $code - failed to check http://$host:$port ($?)."
+      return $EC_CHECK_HTTP_REQ_ERR
+    }
+    [[ "$code" =~ ^(200|302|401|403|404)$ ]] || {
+      log "ERROR: unexpected HTTP code $code."
+      return $EC_CHECK_HTTP_CODE_ERR
+    }
   else
     return $EC_CHECK_PROTO_ERR
   fi
