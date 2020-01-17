@@ -59,12 +59,6 @@ rotate() {
   done
 }
 
-execute() {
-  local cmd=$1; log --debug "Executing command ..."
-  [ "$(type -t $cmd)" = "function" ] || cmd=_$cmd
-  $cmd ${@:2}
-}
-
 applyEnvFiles() {
   local envFile; for envFile in $(find /opt/app/bin/envs -name "*.env"); do . $envFile; done
 }
@@ -132,6 +126,10 @@ _checkSvc() {
   done
 }
 
+checkSvc() {
+  _checkSvc $@
+}
+
 startSvc() {
   systemctl start ${1%%/*}
 }
@@ -151,30 +149,50 @@ _preCheck() {
   checkEnv "$MY_IP"
 }
 
+preCheck() {
+  _preCheck $@
+}
+
 _initNode() {
   rm -rf /data/lost+found
   install -d -o syslog -g svc /data/appctl/logs
   local svc; for svc in $(getServices -a); do initSvc $svc; done
 }
 
+initNode() {
+  _initNode $@
+}
+
 _revive() {
   local svc; for svc in $(getServices); do
-    execute checkSvc $svc || restartSvc $svc || log "ERROR: failed to restart '$svc' ($?)."
+    checkSvc $svc || restartSvc $svc || log "ERROR: failed to restart '$svc' ($?)."
   done
+}
+
+revive() {
+  _revive $@
 }
 
 _check() {
   local svc; for svc in $(getServices); do
-    execute checkSvc $svc
+    checkSvc $svc
   done
+}
+
+check() {
+  _check $@
 }
 
 _start() {
   isNodeInitialized || {
-    execute initNode
+    initNode
     systemctl restart rsyslog # output to log files under /data
   }
   local svc; for svc in $(getServices); do startSvc $svc; done
+}
+
+start() {
+  _start $@
 }
 
 _stop() {
@@ -182,9 +200,17 @@ _stop() {
   local svc; for svc in $(getServices -a | xargs -n1 | tac); do stopSvc $svc; done
 }
 
+stop() {
+  _stop $@
+}
+
 _restart() {
-  execute stop
-  execute start
+  stop
+  start
+}
+
+restart() {
+  _restart $@
 }
 
 _reload() {
@@ -196,10 +222,14 @@ _reload() {
   done
 }
 
+reload() {
+  _reload $@
+}
+
 applyEnvFiles
 applyRoleScripts
 
 set -eo pipefail
 
-execute preCheck
-execute $command $args
+preCheck
+$command $args
