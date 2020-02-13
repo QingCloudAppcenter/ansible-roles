@@ -1,8 +1,8 @@
 galaxy_info:
-  role_name: haproxy
-  role_version: 1.0.3
+  role_name: update-apt-sources
+  role_version: 1.0.0
   author: Hongliang Wang
-  description: installs haproxy
+  description: update apt sources
 
   license: Apache
 

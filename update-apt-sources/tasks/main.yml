@@ -1,0 +1,5 @@
+- name: fix apt sources issue
+  replace:
+    path: /etc/apt/sources.list
+    regexp: 'main$'
+    replace: 'main universe'
