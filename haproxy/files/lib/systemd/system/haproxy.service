@@ -9,6 +9,7 @@ ConditionFileNotEmpty=/opt/app/conf/haproxy/haproxy.cfg
 User=haproxy
 Group=haproxy
 RuntimeDirectory=haproxy
+WorkingDirectory=/var/lib/haproxy
 Environment="CONFIG=/opt/app/conf/haproxy/haproxy.cfg" "PIDFILE=/var/run/haproxy/haproxy.pid" "EXTRAOPTS=-S /var/run/haproxy/haproxy-master.sock"
 ExecStartPre=/usr/sbin/haproxy -f $CONFIG -c -q $EXTRAOPTS
 ExecStart=/usr/sbin/haproxy -Ws -f $CONFIG -p $PIDFILE $EXTRAOPTS
