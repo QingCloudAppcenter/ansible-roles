@@ -87,7 +87,7 @@ checkMounts() {
   }
 
   local dataDir; for dataDir in $DATA_MOUNTS; do
-    grep -qs " /$dataDir " /proc/mounts
+    grep -qs " $dataDir " /proc/mounts
   done
 }
 
