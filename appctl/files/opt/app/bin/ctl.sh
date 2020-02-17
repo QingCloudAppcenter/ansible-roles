@@ -80,6 +80,17 @@ checkEnv() {
   test -n "$1"
 }
 
+checkMounts() {
+  test -n "${DATA_MOUNTS+x}" || {
+    log "ERROR: DATA_MOUNTS variable is required to be set."
+    return 1
+  }
+
+  local dataDir; for dataDir in $DATA_MOUNTS; do
+    grep -qs " /$dataDir " /proc/mounts
+  done
+}
+
 getServices() {
   if [ "$1" = "-a" ]; then
     echo $SERVICES
@@ -159,6 +170,7 @@ _preCheck() {
 }
 
 _initNode() {
+  checkMounts
   rm -rf /data/lost+found
   install -d -o syslog -g svc /data/appctl/logs
   local svc; for svc in $(getServices -a); do initSvc $svc; done
@@ -206,6 +218,7 @@ _reload() {
 applyEnvFiles
 applyRoleScripts
 
+[ "$APPCTL_ENV" == "dev" ] && set -x
 set -eo pipefail
 
 execute preCheck
