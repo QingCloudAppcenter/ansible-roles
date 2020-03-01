@@ -29,3 +29,10 @@ flush() {
     cat -
   fi
 }
+
+applyEnvs() {
+  local -r envFile=/opt/app/bin/envs/confd.env
+  if [ -f "$envFile" ]; then . $envFile; fi
+}
+
+applyEnvs
