@@ -1,0 +1,100 @@
+---
+- name: set up default home var
+  set_fact:
+    default_dest_dir: "/opt/{{ opts.pkg_name }}/{{ opts.pkg_version }}"
+
+- name: set up variables
+  set_fact:
+    dest_path: "{{ opts.dest_path | d(default_dest_dir) }}"
+    pkg_name: "{{ opts.pkg_name }}"
+    pkg_version: "{{ opts.pkg_version }}"
+    pkg_type: "{{ opts.pkg_type }}"
+    extracts: "{{ opts.extracts | d(false) }}"
+    extra_opts: "{{ opts.extra_opts | d(['--strip-components=1'] if opts.pkg_type == '.tgz' else []) }}"
+    creates: "{{ opts.creates | d('') }}"
+    parent_role_path: "{{ ansible_parent_role_paths[0] }}"
+    target_owner: "{{ opts.owner | d('root') }}"
+    target_group: "{{ opts.group | d('root') }}"
+
+- name: set other variables
+  set_fact:
+    local_path: "{{ parent_role_path }}/files/tmp/{{ pkg_name }}-{{ pkg_version }}{{ pkg_type }}"
+
+- name: install tools
+  apt:
+    name: ['unzip']
+    state: present
+    update_cache: no
+  when:
+  - extracts
+  - pkg_type == '.zip'
+
+- name: check if package file exists
+  stat:
+    path: "{{ local_path }}"
+  register: cached_file
+  run_once: True
+  delegate_to: localhost
+
+- name: prepare local dir
+  file:
+    dest: "{{ local_path | dirname }}"
+    state: directory
+  delegate_to: localhost
+  when:
+  - cached_file.stat.exists == False
+
+- name: download package - {{ pkg_name }}
+  get_url:
+    url: "{{ opts.pkg_url }}"
+    dest: "{{ local_path }}"
+  delegate_to: localhost
+  run_once: True
+  when:
+  - cached_file.stat.exists == False
+
+- name: Prepare directories - {{ pkg_name }}
+  file:
+    path: "{{ dest_path if extracts or dest_path[-1] == '/' else dest_path | dirname }}"
+    owner: "{{ target_owner }}"
+    group: "{{ target_group }}"
+    state: directory
+
+- name: extract package - {{ pkg_name }}
+  unarchive:
+    src: "{{ local_path }}"
+    dest: "{{ dest_path }}"
+    creates: "{{ dest_path }}/{{ creates }}"
+    extra_opts: "{{ extra_opts }}"
+  when:
+  - extracts
+
+- name: set permissions - {{ pkg_name }}
+  file:
+    path: "{{ dest_path }}"
+    owner: "{{ target_owner }}"
+    group: "{{ target_group }}"
+    recurse: yes
+  when:
+  - extracts
+
+- name: transfer package - {{ pkg_name }}
+  copy:
+    src: "{{ local_path }}"
+    dest: "{{ dest_path }}"
+    mode: "{{ opts.file_mode | d('644') }}"
+  when:
+  - extracts == False
+
+- name: create symbolic link - {{ pkg_name }}
+  file:
+    src: "{{ pkg_version }}"
+    dest: "/opt/{{ pkg_name }}/current"
+    state: link
+  when: dest_path == default_dest_dir
+
+- name: add bin path to PATH
+  copy:
+    dest: /etc/profile.d/{{ pkg_name }}-path.sh
+    content: PATH={{ dest_path | regex_replace('\\/$', '') }}/{{ opts.bin_path }}:$PATH
+  when: opts.bin_path is defined
