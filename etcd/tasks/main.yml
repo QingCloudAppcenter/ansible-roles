@@ -1,8 +1,4 @@
 ---
-- name: set vars
-  set_fact:
-    etcd_version: 3.3.18
-
 - name: prepare download dir
   file:
     path: "{{ role_path }}/files/tmp"
@@ -76,3 +72,4 @@
     enabled: no
     masked: yes
     state: stopped
+
