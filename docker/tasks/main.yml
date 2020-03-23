@@ -1,51 +1,46 @@
 ---
 - name: set vars
   set_fact:
-    containerd_version: 1.2.6-3
-    docker_version: 19.03.5~3
+    download_base_url: https://download.docker.com/linux/ubuntu/dists/{{ ansible_distribution_release }}/pool/stable/amd64
+    packages:
+    - containerd.io_{{ containerd_version }}~3_amd64.deb
+    - docker-ce-cli_{{ docker_version }}~3-0~ubuntu-{{ ansible_distribution_release }}_amd64.deb
+    - docker-ce_{{ docker_version }}~3-0~ubuntu-{{ ansible_distribution_release }}_amd64.deb
+    dest_path: "{{ remote_path | d('/tmp') }}"
 
-- name: prepare download dir
-  file:
-    path: "{{ role_path }}/files/tmp/{{ ansible_distribution_release }}"
-    state: directory
-  delegate_to: localhost
-
-- name: Download reusable containerd binaries locally
-  get_url:
-    url: "https://download.docker.com/linux/ubuntu/dists/{{ ansible_distribution_release }}/pool/stable/amd64/containerd.io_{{ containerd_version }}_amd64.deb"
-    dest: "{{ role_path }}/files/tmp/{{ ansible_distribution_release }}/containerd-{{ containerd_version }}.deb"
-  delegate_to: localhost
-
-- name: Download reusable Docker CE CLI binaries locally
-  get_url:
-    url: "https://download.docker.com/linux/ubuntu/dists/{{ ansible_distribution_release }}/pool/stable/amd64/docker-ce-cli_{{ docker_version }}-0~ubuntu-{{ ansible_distribution_release }}_amd64.deb"
-    dest: "{{ role_path }}/files/tmp/{{ ansible_distribution_release }}/docker-ce-cli-{{ docker_version }}.deb"
-  delegate_to: localhost
-
-- name: Download reusable Docker CE binaries locally
-  get_url:
-    url: "https://download.docker.com/linux/ubuntu/dists/{{ ansible_distribution_release }}/pool/stable/amd64/docker-ce_{{ docker_version }}-0~ubuntu-{{ ansible_distribution_release }}_amd64.deb"
-    dest: "{{ role_path }}/files/tmp/{{ ansible_distribution_release }}/docker-ce-{{ docker_version }}.deb"
-  delegate_to: localhost
-
-- name: Copy Docker binaries
-  copy:
-    src: "{{ role_path }}/files/tmp/{{ ansible_distribution_release }}/{{ item }}"
-    dest: "/tmp/{{ item }}"
-  with_items:
-    - "containerd-{{ containerd_version }}.deb"
-    - "docker-ce-cli-{{ docker_version }}.deb"
-    - "docker-ce-{{ docker_version }}.deb"
+- name: install docker
+  include_role:
+    name: install-1.0.1
+  vars:
+    opts:
+      dest_path: "{{ dest_path }}"
+      local_path: "{{ ansible_distribution_release }}"
+      pkg_name: "{{ pkg.split('_').0 }}"
+      pkg_version: "{{ pkg.split('_').1 | regex_search('^[0-9.]+') }}"
+      pkg_type: deb
+      pkg_url: "{{ download_base_url }}/{{ pkg }}"
+  loop: "{{ packages }}"
+  loop_control:
+    loop_var: pkg
 
 - name: Install Docker
   apt:
-    deb: "/tmp/{{ item }}.deb"
+    deb: "{{ dest_path }}/{{ pkg.split('_').0 }}-{{ pkg.split('_').1 | regex_search('^[0-9.]+') }}.deb"
     policy_rc_d: 101
     state: present
-  with_items:
-    - "containerd-{{ containerd_version }}"
-    - "docker-ce-cli-{{ docker_version }}"
-    - "docker-ce-{{ docker_version }}"
+  loop: "{{ packages }}"
+  loop_control:
+    loop_var: pkg
+
+- name: prepare config dir
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: prepare config file
+  file:
+    path: /etc/docker/daemon.json
+    state: touch
 
 - name: mask docker service
   systemd:
