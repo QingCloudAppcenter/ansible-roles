@@ -1,24 +1,25 @@
 ---
 - name: set up default home var
   set_fact:
-    default_dest_dir: "/opt/{{ opts.pkg_name }}/{{ opts.pkg_version }}"
+    default_dest_dir: "/opt/{{ opts.pkg_name }}/{{ opts.pkg_version }}/"
+  when: opts.pkg_version is defined
 
 - name: set up variables
   set_fact:
     dest_path: "{{ opts.dest_path | d(default_dest_dir) }}"
     pkg_name: "{{ opts.pkg_name }}"
-    pkg_version: "{{ opts.pkg_version }}"
-    pkg_type: "{{ opts.pkg_type }}"
+    pkg_type: "{{ opts.pkg_type | d('') }}"
+    pkg_version: "{{ opts.pkg_version | d('') }}"
     extracts: "{{ opts.extracts | d(false) }}"
-    extra_opts: "{{ opts.extra_opts | d(['--strip-components=1'] if opts.pkg_type == '.tgz' else []) }}"
+    extra_opts: "{{ opts.extra_opts | d(['--strip-components=1'] if opts.pkg_type == 'tgz' else []) }}"
     creates: "{{ opts.creates | d('') }}"
     parent_role_path: "{{ ansible_parent_role_paths[0] }}"
-    target_owner: "{{ opts.owner | d('root') }}"
-    target_group: "{{ opts.group | d('root') }}"
+    target_owner: "{{ opts.target_owner | d('root') }}"
+    target_group: "{{ opts.target_group | d('root') }}"
 
 - name: set other variables
   set_fact:
-    local_path: "{{ parent_role_path }}/files/tmp/{{ pkg_name }}-{{ pkg_version }}{{ pkg_type }}"
+    local_path: "{{ parent_role_path }}/files/tmp/{{ opts.local_path + '/' if opts.local_path is defined else '' }}{{ pkg_name }}{{ '-' + pkg_version if pkg_version else '' }}{{ '.' + pkg_type if pkg_type else '' }}"
 
 - name: install tools
   apt:
@@ -27,7 +28,7 @@
     update_cache: no
   when:
   - extracts
-  - pkg_type == '.zip'
+  - pkg_type == 'zip'
 
 - name: check if package file exists
   stat:
@@ -64,7 +65,9 @@
   unarchive:
     src: "{{ local_path }}"
     dest: "{{ dest_path }}"
-    creates: "{{ dest_path }}/{{ creates }}"
+    owner: "{{ target_owner }}"
+    group: "{{ target_group }}"
+    creates: "{{ dest_path if dest_path[-1] == '/' else dest_path + '/' }}{{ creates }}"
     extra_opts: "{{ extra_opts }}"
   when:
   - extracts
