@@ -1,6 +1,17 @@
 ---
-- name: install arping
+- name: download
+  include_role:
+    name: install-1.0.1
+  vars:
+    opts:
+      dest_path: /tmp/
+      pkg_name: arping
+      pkg_version: "{{ arping_version }}"
+      pkg_type: deb
+      pkg_url: http://archive.ubuntu.com/ubuntu/pool/main/i/iputils/iputils-arping_{{ arping_version }}-3_amd64.deb
+
+- name: install
   apt:
-    name: [ 'iputils-arping' ]
+    deb: /tmp/arping-{{ arping_version }}.deb
+    policy_rc_d: 101
     state: present
-    update_cache: yes
