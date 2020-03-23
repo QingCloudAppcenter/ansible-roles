@@ -1,0 +1,19 @@
+---
+- name: set var
+  set_fact:
+    svc_group: "{{ svc_group | d('svc') }}"
+    svc_user: "{{ svc_user }}"
+
+- name: prepare group
+  group:
+    name: "{{ svc_group }}"
+    state: present
+
+- name: prepare user
+  user:
+    name: "{{ svc_user }}"
+    groups: "{{ svc_group }}"
+    shell: /sbin/nologin
+    create_home: no
+    append: yes
+    state: present
