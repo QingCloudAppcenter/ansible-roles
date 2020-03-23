@@ -31,8 +31,12 @@ flush() {
 }
 
 applyEnvs() {
-  local -r envFile=/opt/app/bin/envs/confd.env
-  if [ -f "$envFile" ]; then . $envFile; fi
+  local f; for f in $(find /opt/app/bin/envs/ -name appctl.env -o -name confd.env); do . $f; done
+}
+
+applyScripts() {
+  local f; for f in $(find /opt/app/bin/node/ -name confd.sh); do . $f; done
 }
 
 applyEnvs
+applyScripts

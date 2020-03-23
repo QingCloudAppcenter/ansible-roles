@@ -13,13 +13,14 @@
 
     parentRolePath="{{ ansible_parent_role_paths[0] }}"
     srcRootDir="$parentRolePath/files/etc/confd/templates"
-    [ -d "$srcRootDir" ]
+    test -d "$srcRootDir" || exit 1
     destDir=$parentRolePath/files/tmp/confd/templates
     mkdir -p $destDir
     rm -rf $destDir/*
-    for srcDir in $(ls -d $srcRootDir/*); do
-      compileTmpls $destDir/$(basename $srcDir).tmpl $(ls $srcDir/*)
+    for srcDir in $(ls -d $srcRootDir/*/); do
+      compileTmpls $destDir/$(basename $srcDir).tmpl $(ls $srcDir*.tmpl)
     done
+    find $srcRootDir -maxdepth 1 -name '*.tmpl' -exec cp {} $destDir/ \;
   args:
     executable: /bin/bash
   delegate_to: localhost
