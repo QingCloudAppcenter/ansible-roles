@@ -1,7 +1,7 @@
 ---
 - name: install yq
   include_role:
-    name: install-1.0.0
+    name: install-1.0.1
   vars:
     opts:
       dest_path: /usr/bin/yq
