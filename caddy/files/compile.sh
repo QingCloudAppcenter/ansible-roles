@@ -10,7 +10,7 @@ module caddy
 go 1.13
 
 require (
-  blitznote.com/src/http.upload/v3 v$CADDY_UPLOAD_VERSION
+  blitznote.com/src/http.upload/v4 v$CADDY_UPLOAD_VERSION
   github.com/caddyserver/caddy v$CADDY_VERSION
 )
 MOD_EOF

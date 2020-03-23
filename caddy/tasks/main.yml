@@ -1,29 +1,9 @@
 ---
-- name: prepare service group
-  group:
-    name: svc
-    state: present
-
 - name: prepare service user
-  user:
-    name: caddy
-    groups: svc
-    shell: /sbin/nologin
-    create_home: no
-    append: yes
-    comment: "Service User"
-    state: present
-
-- name: prepare binary directory
-  file:
-    path: /opt/caddy/{{ caddy_version }}
-    state: directory
-
-- name: link binary dir
-  file:
-    src: "{{ caddy_version }}"
-    dest: /opt/caddy/current
-    state: link
+  include_role:
+    name: create-service-user-1.0.0
+  vars:
+    svc_user: caddy
 
 - name: compile with plugins
   include_tasks: compile-and-install.yml
@@ -35,7 +15,7 @@
 
 - name: transfer files
   copy:
-    src: files/{{ file_path }}
+    src: "{{ role_path }}/files/{{ file_path }}"
     dest: /{{ file_path }}
     owner: root
     group: root

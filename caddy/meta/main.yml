@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: caddy
-  role_version: 1.0.6
+  role_version: 1.0.7
   author: Hongliang Wang
   description: installs caddy server
 

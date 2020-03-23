@@ -15,7 +15,6 @@
     target_file: "{{ work_dir }}/caddy-{{ caddy_version }}"
   args:
     chdir: "{{ work_dir }}"
-    creates: "{{ target_file }}"
   environment:
     GO111MODULE: "on"
     CADDY_VERSION: "{{ caddy_version }}"
@@ -23,6 +22,17 @@
     TARGET_FILE: "{{ target_file }}"
   local_action: command bash {{ role_path }}/files/compile.sh
   run_once: True
+
+- name: prepare binary directory
+  file:
+    path: /opt/caddy/{{ caddy_version }}
+    state: directory
+
+- name: link binary dir
+  file:
+    src: "{{ caddy_version }}"
+    dest: /opt/caddy/current
+    state: link
 
 - name: install
   copy:
