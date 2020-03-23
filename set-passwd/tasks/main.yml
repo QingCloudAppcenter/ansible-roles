@@ -1,0 +1,15 @@
+---
+- name: set up var
+  set_fact:
+    user_name: "{{ vm_user.username | d('ubuntu') }}"
+    user_password: "{{ vm_user.password | d(adminPwd) }}"
+    requires_change_pwd: "{{ vm_user.requires_change_pwd | d(false) }}"
+
+- name: set password
+  user:
+    name: "{{ user_name }}"
+    password: "{{ user_password | password_hash('sha512') }}"
+
+- name: expire password
+  shell: chage -d 0 {{ user_name }}
+  when: requires_change_pwd
