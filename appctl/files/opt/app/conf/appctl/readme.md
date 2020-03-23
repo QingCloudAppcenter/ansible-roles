@@ -1,0 +1,2 @@
+- node.ready
+- cluster.ready

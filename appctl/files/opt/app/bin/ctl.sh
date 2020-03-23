@@ -9,16 +9,24 @@
 #
 # Specific hooks will be executed if exist, otherwise the default ones.
 
-# Error codes
-EC_CHECK_INACTIVE=200
-EC_CHECK_PORT_ERR=201
-EC_CHECK_PROTO_ERR=202
-EC_ENV_ERR=203
-EC_CHECK_HTTP_REQ_ERR=204
-EC_CHECK_HTTP_CODE_ERR=205
+readonly APPCTL_ERR_CODES="
+EC_CHECK_INACTIVE
+EC_CHECK_PORT_ERR
+EC_CHECK_PROTO_ERR
+EC_ENV_ERR
+EC_CHECK_HTTP_REQ_ERR
+EC_CHECK_HTTP_CODE_ERR
+"
 
 command=$1
 args="${@:2}"
+
+buildErrorCodes() {
+  local i=0 code; for code in ${@:2}; do
+    readonly ${code}=$(( $1 + $i ))
+    i=$(( $i + 1 ))
+  done
+}
 
 log() {
   if [ "$1" == "--debug" ]; then
@@ -32,14 +40,14 @@ retry() {
   local tried=0
   local maxAttempts=$1
   local interval=$2
-  local stopCode=$3
+  local stopCodes=$3
   local cmd="${@:4}"
   local retCode=0
   while [ $tried -lt $maxAttempts ]; do
     $cmd && return 0 || {
       retCode=$?
-      if [ "$retCode" = "$stopCode" ]; then
-        log "'$cmd' returned with stop code $stopCode. Stopping ..."
+      if [[ ",$stopCodes," == *",$retCode,"* ]]; then
+        log "'$cmd' returned with stop code '$retCode'. Stopping ..."
         return $retCode
       fi
     }
@@ -52,12 +60,13 @@ retry() {
 }
 
 rotate() {
-  local maxFilesCount=5
+  local maxFilesCount=5 method=cp
+  if [ "$1" = "-m" ]; then method=mv; shift; fi
   for path in $@; do
     for i in $(seq 1 $maxFilesCount | tac); do
       if [ -f "${path}.$i" ]; then mv ${path}.$i ${path}.$(($i+1)); fi
     done
-    if [ -f "$path" ]; then cp $path ${path}.1; fi
+    if [ -f "$path" ]; then $method $path ${path}.1; fi
   done
 }
 
@@ -68,12 +77,11 @@ execute() {
 }
 
 applyEnvFiles() {
-  local envFile; for envFile in $(find /opt/app/bin/envs -name "*.env"); do . $envFile; done
+  local f; for f in $(find /opt/app/bin/envs -name "*.env"); do . $f; done
 }
 
 applyRoleScripts() {
-  local scriptFile=/opt/app/bin/node/$NODE_CTL.sh
-  if [ -f "$scriptFile" ]; then . $scriptFile; fi
+  local f; for f in $(find /opt/app/bin/node/ -name $NODE_CTL.sh); do . $f; done
 }
 
 checkEnv() {
@@ -128,8 +136,11 @@ checkEndpoint() {
 }
 
 isNodeInitialized() {
-  local svcs="$(getServices -a)"
-  [ "$(systemctl is-enabled ${svcs%%/*})" == "disabled" ]
+  test -f $APPCTL_NODE_FILE
+}
+
+isClusterInitialized() {
+  test -f $APPCTL_CLUSTER_FILE
 }
 
 initSvc() {
@@ -163,6 +174,11 @@ restartSvc() {
   startSvc $1
 }
 
+maskSvc() {
+  stopSvc $1
+  systemctl mask ${1%%/*}
+}
+
 ### app management
 
 _preCheck() {
@@ -172,8 +188,15 @@ _preCheck() {
 _initNode() {
   checkMounts
   rm -rf /data/lost+found
-  install -d -o syslog -g svc /data/appctl/logs
+  mkdir -p /data/appctl/{data,logs}
+  chown -R syslog.svc /data/appctl/logs
   local svc; for svc in $(getServices -a); do initSvc $svc; done
+  touch $APPCTL_NODE_FILE
+}
+
+_initCluster() {
+  isNodeInitialized || execute initNode
+  touch $APPCTL_CLUSTER_FILE
 }
 
 _revive() {
@@ -183,9 +206,14 @@ _revive() {
 }
 
 _check() {
+  isClusterInitialized && isNodeInitialized || return 0
   local svc; for svc in $(getServices); do
     execute checkSvc $svc
   done
+}
+
+_init() {
+  execute initCluster
 }
 
 _start() {
@@ -215,8 +243,17 @@ _reload() {
   done
 }
 
+_destroy() {
+  log "Masking all services ..."
+  local svc; for svc in $(getServices -a | xargs -n1 | tac); do maskSvc $svc; done
+  find /opt/app/bin/tmpl/ -type f -name '*.sh' -delete
+  if [ "$APPCTL_ENV" == "dev" ]; then if test -d /data; then rm -rf /data/*; fi; fi
+}
+
 applyEnvFiles
 applyRoleScripts
+buildErrorCodes 128 $APP_ERR_CODES
+buildErrorCodes 200 $APPCTL_ERR_CODES
 
 [ "$APPCTL_ENV" == "dev" ] && set -x
 set -eo pipefail
