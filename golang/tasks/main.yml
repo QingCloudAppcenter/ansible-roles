@@ -1,0 +1,13 @@
+---
+- name: install golang
+  include_role:
+    name: install-1.0.1
+  vars:
+    opts:
+      pkg_name: golang
+      pkg_version: "{{ golang_version }}"
+      pkg_type: tgz
+      pkg_url: https://dl.google.com/go/go{{ golang_version }}.linux-amd64.tar.gz
+      extracts: yes
+      creates: bin
+      bin_path: bin
