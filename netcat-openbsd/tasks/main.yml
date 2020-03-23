@@ -4,6 +4,17 @@
     name: netcat-openbsd
     state: absent
 
+- name: download nc
+  include_role:
+    name: install-1.0.1
+  vars:
+    opts:
+      dest_path: /tmp/
+      pkg_name: nc
+      pkg_version: "{{ nc_version }}"
+      pkg_type: deb
+      pkg_url: http://archive.ubuntu.com/ubuntu/pool/main/n/netcat-openbsd/netcat-openbsd_{{ nc_version }}-7ubuntu1_amd64.deb
+
 - name: install nc
   apt:
-    deb: http://archive.ubuntu.com/ubuntu/pool/main/n/netcat-openbsd/netcat-openbsd_1.105-7ubuntu1_amd64.deb
+    deb: /tmp/nc-{{ nc_version }}.deb
