@@ -3,24 +3,14 @@
   set_fact:
     jq_version: "1.6"
 
-- name: prepare dir
-  file:
-    path: "{{ role_path }}/files/tmp"
-    state: directory
-  delegate_to: localhost
-
-- name: download jq
-  vars:
-    dest_path: "{{ role_path }}/files/tmp/jq-{{ jq_version }}"
-  get_url:
-    url: https://github.com/stedolan/jq/releases/download/jq-{{ jq_version }}/jq-linux64
-    dest: "{{ dest_path }}"
-  delegate_to: localhost
-  when: dest_path is not exists
-  run_once: True
-
 - name: install jq
-  copy:
-    src: "{{ role_path }}/files/tmp/jq-{{ jq_version }}"
-    dest: /usr/bin/jq
-    mode: 0755
+  include_role:
+    name: install-1.0.1
+  vars:
+    opts:
+      dest_path: /usr/bin/jq
+      file_mode: '755'
+      pkg_name: jq
+      pkg_version: "{{ jq_version }}"
+      pkg_type: ''
+      pkg_url: https://github.com/stedolan/jq/releases/download/jq-{{ jq_version }}/jq-linux64
