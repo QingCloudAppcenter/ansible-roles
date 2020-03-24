@@ -6,7 +6,7 @@
 
 - name: download nc
   include_role:
-    name: install-1.0.1
+    name: install-1.0.2
   vars:
     opts:
       dest_path: /tmp/

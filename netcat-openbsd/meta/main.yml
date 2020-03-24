@@ -1,13 +1,14 @@
 galaxy_info:
   role_name: netcat-openbsd
-  role_version: 1.0.1
+  role_version: 1.0.2
   author: Hongliang Wang
   description: installs netcat-openbsd (nc)
 
   license: Apache
 
-  min_ansible_version: 2.4
+  min_ansible_version: 2.9
 
   galaxy_tags: []
 
-dependencies: []
+dependencies:
+- src: https://qingcloudappcenter.github.io/ansible-roles/install-1.0.2.tar.gz
