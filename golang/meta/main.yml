@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: golang
-  role_version: 1.0.0
+  role_version: 1.0.1
   author: Hongliang Wang
   description: installs golang
 
@@ -10,4 +10,5 @@ galaxy_info:
 
   galaxy_tags: []
 
-dependencies: []
+dependencies:
+- src: https://qingcloudappcenter.github.io/ansible-roles/install-1.0.2.tar.gz
