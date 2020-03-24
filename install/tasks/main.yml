@@ -67,7 +67,7 @@
     dest: "{{ dest_path }}"
     owner: "{{ target_owner }}"
     group: "{{ target_group }}"
-    creates: "{{ dest_path if dest_path[-1] == '/' else dest_path + '/' }}{{ creates }}"
+    creates: "{{ dest_path | regex_replace('/*$', '') }}/{{ creates }}"
     extra_opts: "{{ extra_opts }}"
   when:
   - extracts
@@ -99,5 +99,5 @@
 - name: add bin path to PATH
   copy:
     dest: /etc/profile.d/{{ pkg_name }}-path.sh
-    content: PATH={{ dest_path | regex_replace('\\/$', '') }}/{{ opts.bin_path }}:$PATH
+    content: PATH={{ dest_path | regex_replace('/*$', '') }}/{{ opts.bin_path }}:$PATH
   when: opts.bin_path is defined
