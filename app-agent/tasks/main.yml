@@ -5,7 +5,7 @@
 
 - name: install packages
   include_role:
-    name: install-1.0.1
+    name: install-1.0.2
   vars:
     opts:
       pkg_name: app-agent
