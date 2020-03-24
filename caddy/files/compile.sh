@@ -21,7 +21,7 @@ package main
 import (
   "github.com/caddyserver/caddy/caddy/caddymain"
 
-  _ "blitznote.com/src/http.upload/v3"
+  _ "blitznote.com/src/http.upload/v4"
 )
 
 func main() {
