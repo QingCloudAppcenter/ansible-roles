@@ -3,7 +3,7 @@ Description=Caddy HTTP/2 web server
 Documentation=https://caddyserver.com/docs
 After=network-online.target
 Wants=network-online.target
-ConditionFileNotEmpty=/opt/app/conf/caddy/caddyfile
+ConditionFileNotEmpty=/opt/app/current/conf/caddy/caddyfile
 
 [Service]
 Restart=on-abnormal
@@ -12,7 +12,7 @@ User=caddy
 Group=caddy
 
 ; Always set "-root" to something safe in case it gets forgotten in the Caddyfile.
-ExecStart=/opt/caddy/current/caddy -agree=true -conf=/opt/app/conf/caddy/caddyfile
+ExecStart=/opt/caddy/current/caddy -agree=true -conf=/opt/app/current/conf/caddy/caddyfile
 ExecReload=/bin/kill -USR1 $MAINPID
 
 KillMode=mixed

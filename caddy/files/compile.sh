@@ -10,7 +10,7 @@ module caddy
 go 1.13
 
 require (
-  blitznote.com/src/http.upload/v4 v$CADDY_UPLOAD_VERSION
+  blitznote.com/src/http.upload/v${CADDY_UPLOAD_VERSION%%.*} v$CADDY_UPLOAD_VERSION
   github.com/caddyserver/caddy v$CADDY_VERSION
 )
 MOD_EOF
@@ -21,7 +21,7 @@ package main
 import (
   "github.com/caddyserver/caddy/caddy/caddymain"
 
-  _ "blitznote.com/src/http.upload/v4"
+  _ "blitznote.com/src/http.upload/v${CADDY_UPLOAD_VERSION%%.*}"
 )
 
 func main() {

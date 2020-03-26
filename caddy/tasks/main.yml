@@ -15,16 +15,17 @@
 
 - name: transfer files
   copy:
-    src: "{{ role_path }}/files/{{ file_path }}"
-    dest: /{{ file_path }}
+    src: "{{ role_path }}/files/opt/app/"
+    dest: /opt/app/
     owner: root
-    group: root
+    group: svc
     mode: preserve
-  loop:
-    - lib/systemd/system/
-    - opt/app/
-  loop_control:
-    loop_var: file_path
+
+- name: link systemd files
+  file:
+    src: /opt/app/current/conf/systemd/caddy.service
+    dest: /lib/systemd/system/caddy.service
+    state: link
 
 - name: mask caddy service
   systemd:
