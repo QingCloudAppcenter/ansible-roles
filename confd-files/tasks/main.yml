@@ -26,10 +26,15 @@
   delegate_to: localhost
   run_once: True
 
+- name: prepare confd dir
+  file:
+    path: /opt/app/current/conf/confd/
+    state: directory
+
 - name: install
   copy:
     src: "{{ ansible_parent_role_paths[0] }}/files/{{ path.src }}/"
-    dest: /etc/confd/{{ path.dest }}/
+    dest: /opt/app/current/conf/confd/{{ path.dest }}/
     owner: root
     group: root
   loop:
@@ -39,3 +44,13 @@
     dest: templates
   loop_control:
     loop_var: path
+
+- name: link confd files
+  file:
+    src: /opt/app/current/conf/confd/{{ item | dirname | basename }}/{{ item | basename }}
+    dest: /etc/confd/{{ item | dirname | basename }}/{{ item | basename }}
+    owner: root
+    state: link
+  with_fileglob:
+  - "{{ ansible_parent_role_paths[0] }}/files/etc/confd/conf.d/*"
+  - "{{ ansible_parent_role_paths[0] }}/files/tmp/confd/templates/*"

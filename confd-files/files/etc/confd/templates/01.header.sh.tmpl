@@ -31,11 +31,11 @@ flush() {
 }
 
 applyEnvs() {
-  local f; for f in $(find /opt/app/bin/envs/ -name appctl.env -o -name confd.env); do . $f; done
+  local f; for f in $(find /opt/app/current/bin/envs/ -name appctl.env -o -name confd.env); do . $f; done
 }
 
 applyScripts() {
-  local f; for f in $(find /opt/app/bin/node/ -name confd.sh); do . $f; done
+  local f; for f in $(find /opt/app/current/bin/node/ -name confd.sh); do . $f; done
 }
 
 applyEnvs
