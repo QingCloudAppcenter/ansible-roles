@@ -2,13 +2,14 @@
 Description=etcd
 Documentation=https://etcd.io/
 After=network.target
+ConditionFileNotEmpty=/opt/app/current/conf/etcd/config.yml
 
 [Service]
 Type=notify
 Restart=always
 RestartSec=5s
 User=etcd
-ExecStart=/opt/etcd/current/etcd --config-file /opt/app/conf/etcd/config.yml
+ExecStart=/opt/etcd/current/etcd --config-file /opt/app/current/conf/etcd/config.yml
 LimitNOFILE=65536
 TimeoutStartSec=0
 

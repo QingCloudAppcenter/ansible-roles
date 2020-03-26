@@ -7,7 +7,7 @@
 
 - name: install etcd
   include_role:
-    name: install-1.0.2
+    name: install-1.0.3
   vars:
     opts:
       pkg_name: etcd
@@ -18,13 +18,19 @@
       creates: etcd
       bin_path:
 
-- name: install systemd file
+- name: copy systemd file
   copy:
-    src: files/lib/systemd/system/
-    dest: /lib/systemd/system/
+    src: files/opt/app/
+    dest: /opt/app/
     owner: root
-    group: root
+    group: svc
     mode: preserve
+
+- name: link systemd file
+  file:
+    src: /opt/app/current/conf/systemd/etcd.service
+    dest: /lib/systemd/system/etcd.service
+    state: link
 
 - name: mask etcd service
   systemd:
@@ -32,11 +38,3 @@
     enabled: no
     masked: yes
     state: stopped
-
-- name: install sample conf files
-  copy:
-    src: files/opt/app/
-    dest: /opt/app/
-    owner: root
-    group: svc
-    mode: preserve
