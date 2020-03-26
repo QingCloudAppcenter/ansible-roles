@@ -23,16 +23,26 @@
 
 - name: copy conf files
   copy:
-    src: "{{ role_path }}/files/{{ item }}"
-    dest: /{{ item }}
+    src: "{{ role_path }}/files/opt/app/"
+    dest: /opt/app/
     owner: root
-    group: root
+    group: svc
     mode: preserve
-  with_items:
-    - etc/logrotate.d/
-    - etc/rsyslog.d/
-    - lib/systemd/system/
-    - opt/app/
+
+- name: link files
+  file:
+    src: "{{ role_path }}/files/opt/app/current/conf/{{ file.src }}"
+    dest: /{{ file.dest }}
+    state: link
+  loop:
+  - src: logrotate/haproxy
+    dest: etc/logrotate.d/
+  - src: rsyslog/49-haproxy.conf
+    dest: etc/rsyslog.d/
+  - src: systemd/haproxy.service
+    dest: lib/systemd/system/
+  loop_control:
+    loop_var: file
 
 - name: update dir owner
   file:

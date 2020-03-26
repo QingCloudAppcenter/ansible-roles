@@ -3,14 +3,14 @@ Description=HAProxy Load Balancer
 Documentation=man:haproxy(1)
 Documentation=file:/usr/share/doc/haproxy/configuration.txt.gz
 After=network.target rsyslog.service
-ConditionFileNotEmpty=/opt/app/conf/haproxy/haproxy.cfg
+ConditionFileNotEmpty=/opt/app/current/conf/haproxy/haproxy.cfg
 
 [Service]
 User=haproxy
 Group=haproxy
 RuntimeDirectory=haproxy
 WorkingDirectory=/var/lib/haproxy
-Environment="CONFIG=/opt/app/conf/haproxy/haproxy.cfg" "PIDFILE=/var/run/haproxy/haproxy.pid" "EXTRAOPTS=-S /var/run/haproxy/haproxy-master.sock"
+Environment="CONFIG=/opt/app/current/conf/haproxy/haproxy.cfg" "PIDFILE=/var/run/haproxy/haproxy.pid" "EXTRAOPTS=-S /var/run/haproxy/haproxy-master.sock"
 ExecStartPre=/usr/sbin/haproxy -f $CONFIG -c -q $EXTRAOPTS
 ExecStart=/usr/sbin/haproxy -Ws -f $CONFIG -p $PIDFILE $EXTRAOPTS
 ExecReload=/usr/sbin/haproxy -f $CONFIG -c -q $EXTRAOPTS
