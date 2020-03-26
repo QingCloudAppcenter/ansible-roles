@@ -77,11 +77,11 @@ execute() {
 }
 
 applyEnvFiles() {
-  local f; for f in $(find /opt/app/bin/envs -name "*.env"); do . $f; done
+  local f; for f in $(find /opt/app/current/bin/envs -name "*.env"); do . $f; done
 }
 
 applyRoleScripts() {
-  local f; for f in $(find /opt/app/bin/node/ -name $NODE_CTL.sh); do . $f; done
+  local f; for f in $(find /opt/app/current/bin/node/ -name $NODE_CTL.sh); do . $f; done
 }
 
 checkEnv() {
@@ -206,10 +206,13 @@ _revive() {
 }
 
 _check() {
-  isClusterInitialized && isNodeInitialized || return 0
-  local svc; for svc in $(getServices); do
-    execute checkSvc $svc
-  done
+  if isClusterInitialized && isNodeInitialized; then
+    local svc; for svc in $(getServices); do
+      execute checkSvc $svc
+    done
+  else
+    log "Skipped as cluster or node is not initialized."
+  fi
 }
 
 _init() {
@@ -235,18 +238,21 @@ _restart() {
 }
 
 _reload() {
-  if ! isNodeInitialized; then return 0; fi # only reload after initialized
-  local svcs="${@:-$(getServices -a)}"
-  local svc; for svc in $(echo $svcs | xargs -n1 | tac); do stopSvc $svc; done
-  local svc; for svc in $svcs; do
-    if isSvcEnabled $svc; then startSvc $svc; fi
-  done
+  if isNodeInitialized; then
+    local svcs="${@:-$(getServices -a)}"
+    local svc; for svc in $(echo $svcs | xargs -n1 | tac); do stopSvc $svc; done
+    local svc; for svc in $svcs; do
+      if isSvcEnabled $svc; then startSvc $svc; fi
+    done
+  else
+    log "skipped as node is not initialized."
+  fi
 }
 
 _destroy() {
   log "Masking all services ..."
   local svc; for svc in $(getServices -a | xargs -n1 | tac); do maskSvc $svc; done
-  find /opt/app/bin/tmpl/ -type f -name '*.sh' -delete
+  find /opt/app/current/bin/tmpl/ -type f -name '*.sh' -delete
   if [ "$APPCTL_ENV" == "dev" ]; then if test -d /data; then rm -rf /data/*; fi; fi
 }
 
