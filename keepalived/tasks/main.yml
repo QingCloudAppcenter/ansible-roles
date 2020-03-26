@@ -64,13 +64,23 @@
 
 - name: copy conf files
   copy:
-    src: "{{ role_path }}/files/{{ item }}"
-    dest: /{{ item }}
+    src: "{{ role_path }}/files/opt/app/"
+    dest: /opt/app/
     owner: root
     group: svc
     mode: preserve
-  with_items:
-    - etc/logrotate.d/
-    - etc/rsyslog.d/
-    - lib/systemd/system/
-    - opt/app/
+
+- name: link files
+  file:
+    src: /opt/app/current/conf/{{ file.src }}
+    dest: /{{ file.dest }}
+    state: link
+  loop:
+  - src: logrotate/keepalived
+    dest: etc/logrotate.d/
+  - src: rsyslog/51-keepalived.conf
+    dest: etc/rsyslog.d/
+  - src: systemd/keepalived.service
+    dest: lib/systemd/system/
+  loop_control:
+    loop_var: file
