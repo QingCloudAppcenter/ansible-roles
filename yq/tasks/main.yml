@@ -1,12 +1,14 @@
 ---
 - name: install yq
   include_role:
-    name: install-1.0.2
+    name: install-1.0.3
   vars:
     opts:
-      dest_path: /usr/bin/yq
       file_mode: '755'
       pkg_name: yq
       pkg_version: "{{ yq_version }}"
       pkg_type: ''
       pkg_url: https://github.com/mikefarah/yq/releases/download/{{ yq_version }}/yq_linux_amd64
+      bin_links:
+      - src: yq-{{ yq_version }}
+        dest: /usr/bin/yq
