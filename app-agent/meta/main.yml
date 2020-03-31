@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: app-agent
-  role_version: 1.0.4
+  role_version: 1.0.5
   author: Hongliang Wang
   description: installs app agent
 
@@ -11,4 +11,4 @@ galaxy_info:
   galaxy_tags: []
 
 dependencies:
-# https://qingcloudappcenter.github.io/ansible-roles/install-1.0.2.tar.gz
+# https://qingcloudappcenter.github.io/ansible-roles/install-1.0.4.tar.gz
