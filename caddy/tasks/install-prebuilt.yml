@@ -1,7 +1,7 @@
 ---
 - name: install caddy
   include_role:
-    name: install-1.0.3
+    name: install-1.0.4
   vars:
     opts:
       pkg_name: caddy
