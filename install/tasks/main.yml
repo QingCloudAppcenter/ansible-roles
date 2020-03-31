@@ -13,7 +13,7 @@
     extracts: "{{ opts.extracts | d(false) }}"
     extra_opts: "{{ opts.extra_opts | d(['--strip-components=1'] if opts.pkg_type == 'tgz' else []) }}"
     creates: "{{ opts.creates | d('') }}"
-    parent_role_path: "{{ ansible_parent_role_paths[0] }}"
+    parent_role_path: "{{ ansible_parent_role_paths[0] | regex_replace('-[0-9.]+$', '') }}"
     target_owner: "{{ opts.target_owner | d('root') }}"
     target_group: "{{ opts.target_group | d('root') }}"
 
