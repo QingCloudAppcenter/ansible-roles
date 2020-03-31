@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: etcd
-  role_version: 1.0.5
+  role_version: 1.0.6
   author: Hongliang Wang
   description: installs etcd
 
@@ -12,4 +12,4 @@ galaxy_info:
 
 dependencies:
 - src: https://qingcloudappcenter.github.io/ansible-roles/appctl-1.1.2.tar.gz
-# https://qingcloudappcenter.github.io/ansible-roles/install-1.0.3.tar.gz
+# https://qingcloudappcenter.github.io/ansible-roles/install-1.0.4.tar.gz
