@@ -1,7 +1,7 @@
 ---
 - name: define vars
   set_fact:
-    work_dir: "{{ role_path }}/files/tmp/with-upload-module"
+    work_dir: "{{ role_path | regex_replace('-[0-9.]+$', '') }}/files/tmp/with-upload-module"
 
 - name: prepare tmp compile dir
   file:
