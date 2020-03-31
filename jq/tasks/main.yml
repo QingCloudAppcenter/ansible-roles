@@ -5,12 +5,14 @@
 
 - name: install jq
   include_role:
-    name: install-1.0.2
+    name: install-1.0.3
   vars:
     opts:
-      dest_path: /usr/bin/jq
       file_mode: '755'
       pkg_name: jq
       pkg_version: "{{ jq_version }}"
       pkg_type: ''
       pkg_url: https://github.com/stedolan/jq/releases/download/jq-{{ jq_version }}/jq-linux64
+      bin_links:
+      - src: jq-{{ jq_version }}
+        dest: /usr/bin/jq
