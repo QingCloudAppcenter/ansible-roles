@@ -5,7 +5,7 @@
 
 - name: install jq
   include_role:
-    name: install-1.0.3
+    name: install-1.0.4
   vars:
     opts:
       file_mode: '755'
