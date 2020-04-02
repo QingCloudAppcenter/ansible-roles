@@ -13,13 +13,13 @@
     extracts: "{{ opts.extracts | d(false) }}"
     extra_opts: "{{ opts.extra_opts | d(['--strip-components=1'] if opts.pkg_type == 'tgz' else []) }}"
     creates: "{{ opts.creates | d('') }}"
-    parent_role_path: "{{ ansible_parent_role_paths[0] | regex_replace('-[0-9.]+$', '') }}"
+    parent_role_name: "{{ ansible_parent_role_names[0] | regex_replace('-[0-9.]+$', '') }}"
     target_owner: "{{ opts.target_owner | d('root') }}"
     target_group: "{{ opts.target_group | d('root') }}"
 
 - name: set other variables
   set_fact:
-    local_path: "{{ parent_role_path }}/files/tmp/{{ opts.local_path + '/' if opts.local_path is defined else '' }}{{ pkg_name }}{{ '-' + pkg_version if pkg_version else '' }}{{ '.' + pkg_type if pkg_type else '' }}"
+    local_path: "{{ local_cache_path }}/{{ parent_role_name }}/{{ opts.local_path + '/' if opts.local_path is defined else '' }}{{ pkg_name }}{{ '-' + pkg_version if pkg_version else '' }}{{ '.' + pkg_type if pkg_type else '' }}"
 
 - name: install tools
   apt:
