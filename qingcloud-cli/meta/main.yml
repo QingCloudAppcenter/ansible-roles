@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: qingcloud-cli
-  role_version: 1.0.3
+  role_version: 1.0.4
   author: Hongliang Wang
   description: installs qingcloud cli
 
@@ -11,4 +11,4 @@ galaxy_info:
   galaxy_tags: []
 
 dependencies:
-# https://qingcloudappcenter.github.io/ansible-roles/install-1.0.4.tar.gz
+# https://qingcloudappcenter.github.io/ansible-roles/install-1.0.5.tar.gz
