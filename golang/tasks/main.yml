@@ -1,7 +1,7 @@
 ---
 - name: install golang
   include_role:
-    name: install-1.0.2
+    name: install-1.0.5
   vars:
     opts:
       pkg_name: golang
