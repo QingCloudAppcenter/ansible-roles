@@ -190,6 +190,11 @@ _initNode() {
   rm -rf /data/lost+found
   mkdir -p /data/appctl/{data,logs}
   chown -R syslog.svc /data/appctl/logs
+  find /opt/app/current/conf/systemd -mindepth 1 -maxdepth 1 -type f \( -name '*.service' -or -name '*.timer' \) -exec ln -snf {} /lib/systemd/system/ \;
+  find /opt/app/current/conf/systemd -mindepth 1 -maxdepth 1 -type d -name '*.service.d' -exec ln -snf {} /etc/systemd/system/ \;
+  find /opt/app/current/conf/logrotate -type f -exec ln -snf {} /etc/logrotate.d/ \;
+  find /opt/app/current/conf/rsyslog -type f -exec ln -snf {} /etc/rsyslog.d/ \;
+  restartSvc rsyslog
   local svc; for svc in $(getServices -a); do initSvc $svc; done
   touch $APPCTL_NODE_FILE
 }
@@ -220,10 +225,7 @@ _init() {
 }
 
 _start() {
-  isNodeInitialized || {
-    execute initNode
-    systemctl restart rsyslog # output to log files under /data
-  }
+  isNodeInitialized || execute initNode
   local svc; for svc in $(getServices); do startSvc $svc; done
 }
 
