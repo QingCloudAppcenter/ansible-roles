@@ -1,7 +1,7 @@
 ---
 - name: download
   include_role:
-    name: install-1.0.4
+    name: install-1.0.5
   vars:
     opts:
       dest_path: /tmp/
