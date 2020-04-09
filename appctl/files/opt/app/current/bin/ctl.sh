@@ -221,17 +221,22 @@ _check() {
 }
 
 _init() {
-  execute initCluster
+  isClusterInitialized || execute initCluster
 }
 
 _start() {
   isNodeInitialized || execute initNode
-  local svc; for svc in $(getServices); do startSvc $svc; done
+  local svc; for svc in $(getServices); do
+    log "starting $svc ..."
+    startSvc $svc
+  done
 }
 
 _stop() {
-  log "Stopping all services ..."
-  local svc; for svc in $(getServices -a | xargs -n1 | tac); do stopSvc $svc; done
+  local svc; for svc in $(getServices -a | xargs -n1 | tac); do
+    log "stopping $svc ..."
+    stopSvc $svc
+  done
 }
 
 _restart() {
