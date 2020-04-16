@@ -3,7 +3,7 @@
   apt:
     name: ['python3-setuptools']
     state: present
-    update_cache: yes
+    update_cache: no
 
 - name: download
   include_role:
