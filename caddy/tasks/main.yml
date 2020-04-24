@@ -1,4 +1,7 @@
 ---
+- set_fact:
+    caddy_version: "{{ version | d(default_version) }}"
+
 - name: prepare service user
   include_role:
     name: create-service-user-1.0.0
