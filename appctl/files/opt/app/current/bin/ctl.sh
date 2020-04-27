@@ -140,7 +140,7 @@ isNodeInitialized() {
 }
 
 isClusterInitialized() {
-  test -f $APPCTL_CLUSTER_FILE
+  test -z "$DATA_MOUNTS" || test -f $APPCTL_CLUSTER_FILE
 }
 
 initSvc() {
