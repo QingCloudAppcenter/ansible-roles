@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: confd-files
-  role_version: 1.0.5
+  role_version: 1.0.6
   author: Hongliang Wang
   description: installs confd-files
 

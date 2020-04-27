@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -eo pipefail
-
 myPath="$0"
 
 cleanUp() {
@@ -31,7 +29,7 @@ flush() {
 }
 
 applyEnvs() {
-  local f; for f in $(find /opt/app/current/bin/envs/ -name appctl.env -o -name confd.env); do . $f; done
+  local f; for f in $(find /opt/app/current/bin/envs/ -name appdev.env -o -name confd.env); do . $f; done
 }
 
 applyScripts() {
@@ -40,3 +38,6 @@ applyScripts() {
 
 applyEnvs
 applyScripts
+
+set -eo pipefail
+if [ "$APPCTL_ENV" == "dev" ]; then set -x; fi
