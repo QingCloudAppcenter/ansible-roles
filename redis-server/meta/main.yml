@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: redis-server
-  role_version: 1.0.2
+  role_version: 1.0.3
   author: Hongliang Wang
   description: installs redis server
 
