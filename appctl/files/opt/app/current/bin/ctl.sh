@@ -191,7 +191,7 @@ _initNode() {
   mkdir -p /data/appctl/{data,logs}
   chown -R syslog.svc /data/appctl/logs
   find /opt/app/current/conf/sysctl -exec ln -snf {} /etc/sysctl.d/ \;
-  sysctl -p
+  sysctl --system
   find /opt/app/current/conf/systemd -mindepth 1 -maxdepth 1 -type f \( -name '*.service' -or -name '*.timer' \) -exec ln -snf {} /lib/systemd/system/ \;
   find /opt/app/current/conf/systemd -mindepth 1 -maxdepth 1 -type d -name '*.service.d' -exec ln -snf {} /etc/systemd/system/ \;
   systemctl daemon-reload
