@@ -117,7 +117,8 @@ checkActive() {
 }
 
 checkEndpoint() {
-  local proto=${1%:*} host=${2-$MY_IP} port=${1#*:}
+  local proto=${1%%:*} addr=${1#*:} host=${2-$MY_IP} port=${1##*:}
+  if [[ "$addr" == *:* ]]; then host=${addr%:*}; fi
   if [ "$proto" = "tcp" ]; then
     nc -z -w5 $host $port
   elif [ "$proto" = "http" ]; then
