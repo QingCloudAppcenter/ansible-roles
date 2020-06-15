@@ -38,9 +38,10 @@
     state: directory
 
 - name: prepare config file
-  file:
-    path: /etc/docker/daemon.json
-    state: touch
+  copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {}
 
 - name: mask docker service
   systemd:
