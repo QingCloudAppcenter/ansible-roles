@@ -41,11 +41,7 @@
   copy:
     dest: /etc/docker/daemon.json
     content: |
-      {
-        "registry-mirrors": [
-          "https://registry.docker-cn.com"
-        ]
-      }
+      {}
 
 - name: mask docker service
   systemd:
