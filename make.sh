@@ -42,7 +42,7 @@ deploy() {
 
   log "preparing git commit ..."
   echo "roles:" > index.yml
-  findPackages | sort -V | sed 's/^/- /g' >> index.yml
+  findPackages | sort | sed 's/^/- /g' >> index.yml
   git add *.tar.gz index.yml
   git diff --staged --quiet || git commit -m "update"
 
@@ -51,7 +51,7 @@ deploy() {
 }
 
 findChangedPackageNames() {
-  comm -13 <(findPublishedPackageNames | sort -V) <(findPendingPackageNames | sort -V) | xargs
+  comm -13 <(findPublishedPackageNames | sort) <(findPendingPackageNames | sort) | xargs
 }
 
 findPublishedPackageNames() {
