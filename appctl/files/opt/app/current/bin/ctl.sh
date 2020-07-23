@@ -187,7 +187,7 @@ _preCheck() {
 }
 
 _initNode() {
-  [[ $(grep "lxc" /proc/1/environ) ]] || checkMounts
+  systemd-detect-virt -cq || checkMounts
   rm -rf /data/lost+found
   mkdir -p /data/appctl/{data,logs}
   chown -R syslog.svc /data/appctl/logs
