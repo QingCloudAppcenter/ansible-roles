@@ -28,9 +28,13 @@ buildErrorCodes() {
   done
 }
 
+isDev() {
+  [ "$APPCTL_ENV" == "dev" ]
+}
+
 log() {
   if [ "$1" == "--debug" ]; then
-    [ "$APPCTL_ENV" == "dev" ] || return 0
+    isDev || return 0
     shift
   fi
   logger -S 5000 -t appctl --id=$$ -- "[cmd=$command args='$args'] $@"
@@ -264,7 +268,7 @@ _destroy() {
   log "Masking all services ..."
   local svc; for svc in $(getServices -a | xargs -n1 | tac); do maskSvc $svc; done
   find /opt/app/current/bin/tmpl/ -type f -name '*.sh' -delete
-  if [ "$APPCTL_ENV" == "dev" ]; then if test -d /data; then rm -rf /data/*; fi; fi
+  if isDev; then if test -d /data; then rm -rf /data/*; fi; fi
 }
 
 applyEnvFiles
@@ -272,7 +276,7 @@ applyRoleScripts
 buildErrorCodes 128 $APP_ERR_CODES
 buildErrorCodes 200 $APPCTL_ERR_CODES
 
-[ "$APPCTL_ENV" == "dev" ] && set -x
+isDev && set -x
 set -eo pipefail
 
 execute preCheck
