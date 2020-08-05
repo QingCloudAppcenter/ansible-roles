@@ -25,6 +25,7 @@ roles:
 - appctl-1.1.8.tar.gz
 - appctl-1.1.9.tar.gz
 - appctl-1.2.0.tar.gz
+- appctl-1.2.1.tar.gz
 - arping-1.0.0.tar.gz
 - arping-1.0.1.tar.gz
 - arping-1.0.2.tar.gz
