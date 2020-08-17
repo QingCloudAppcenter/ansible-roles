@@ -52,6 +52,7 @@ roles:
 - confd-files-1.0.4.tar.gz
 - confd-files-1.0.5.tar.gz
 - confd-files-1.0.6.tar.gz
+- confd-files-1.0.7.tar.gz
 - create-service-user-1.0.0.tar.gz
 - disable-apt-jobs-1.0.0.tar.gz
 - disable-motd-1.0.0.tar.gz
