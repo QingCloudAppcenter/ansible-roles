@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: caddy
-  role_version: 1.1.6
+  role_version: 1.1.7
   author: Hongliang Wang
   description: installs caddy server
 
@@ -11,5 +11,5 @@ galaxy_info:
   galaxy_tags: []
 
 dependencies:
-- src: https://qingcloudappcenter.github.io/ansible-roles/appctl-1.2.1.tar.gz
+- src: https://qingcloudappcenter.github.io/ansible-roles/appctl-1.2.2.tar.gz
 # https://qingcloudappcenter.github.io/ansible-roles/install-1.0.5.tar.gz
