@@ -145,7 +145,8 @@ isNodeInitialized() {
 }
 
 isClusterInitialized() {
-  test -z "$DATA_MOUNTS" || test -f $APPCTL_CLUSTER_FILE
+  # Be aware that this doesn't work for nodes without /data volumes.
+  test -f $APPCTL_CLUSTER_FILE
 }
 
 initSvc() {
