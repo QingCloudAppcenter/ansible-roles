@@ -76,6 +76,7 @@ roles:
 - etcd-1.0.6.tar.gz
 - etcd-1.0.7.tar.gz
 - etcd-1.0.8.tar.gz
+- etcd-1.0.9.tar.gz
 - golang-1.0.0.tar.gz
 - golang-1.0.1.tar.gz
 - golang-1.0.2.tar.gz
