@@ -36,3 +36,9 @@
     content: |+
       APPCTL_ENV=dev
   when: target_env == 'dev'
+
+- name: unset dev env
+  file:
+    path: /opt/app/current/bin/envs/appdev.env
+    state: absent
+  when: target_env != 'dev'
