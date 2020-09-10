@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: keepalived
-  role_version: 1.0.5
+  role_version: 1.0.6
   author: Hongliang Wang
   description: installs keepalived
 
@@ -11,4 +11,4 @@ galaxy_info:
   galaxy_tags: []
 
 dependencies:
-- src: https://qingcloudappcenter.github.io/ansible-roles/appctl-1.2.2.tar.gz
+# https://qingcloudappcenter.github.io/ansible-roles/appctl-1.2.3.tar.gz
