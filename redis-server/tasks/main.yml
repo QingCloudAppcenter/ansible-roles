@@ -62,6 +62,9 @@
 - name: make binaries
   make:
     chdir: "{{ role_path }}/files/tmp/redis-{{ redis_version }}"
+  params:
+    BUILD_TLS: yes
+    USE_SYSTEMD: yes
   delegate_to: localhost
   run_once: True
 
