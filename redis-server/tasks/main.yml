@@ -1,7 +1,7 @@
 ---
 - name: set vars
   set_fact:
-    redis_version: 6.0.1
+    redis_version: "{{ version | d(default_version) }}"
 
 - name: add the service group
   group:
@@ -36,12 +36,21 @@
     state: directory
   delegate_to: localhost
 
+- name: check if package file exists
+  stat:
+    path: "{{ role_path }}/files/tmp/redis-{{ redis_version }}.tgz"
+  register: cached_file
+  run_once: True
+  delegate_to: localhost
+
 - name: download src
   get_url:
     url: http://download.redis.io/releases/redis-{{ redis_version }}.tar.gz
     dest: "{{ role_path }}/files/tmp/redis-{{ redis_version }}.tgz"
   delegate_to: localhost
   run_once: True
+  when:
+  - cached_file.stat.exists == False
 
 - name: extract src
   unarchive:
@@ -53,6 +62,9 @@
 - name: make binaries
   make:
     chdir: "{{ role_path }}/files/tmp/redis-{{ redis_version }}"
+    params:
+      BUILD_TLS: yes
+      USE_SYSTEMD: yes
   delegate_to: localhost
   run_once: True
 
@@ -92,6 +104,20 @@
   copy:
     dest: /etc/profile.d/redis-path.sh
     content: 'PATH=$PATH:/opt/redis/current'
+
+- stat:
+    path: /etc/rc.local
+  register: rc_local
+
+- name: create rc.local file
+  copy:
+    dest: /etc/rc.local
+    content: |
+      #!/bin/sh
+      set -e
+      exit 0
+    mode: u=rwx,go=rx
+  when: not rc_local.stat.exists
 
 - name: disable huge page
   lineinfile:
