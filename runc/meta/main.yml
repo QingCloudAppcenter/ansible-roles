@@ -1,0 +1,14 @@
+galaxy_info:
+  role_name: runc
+  role_version: 1.0.0
+  author: Hongliang Wang
+  description: installs runc
+
+  license: Apache
+
+  min_ansible_version: 2.9
+
+  galaxy_tags: []
+
+dependencies:
+# https://qingcloudappcenter.github.io/ansible-roles/install-1.0.5.tar.gz
