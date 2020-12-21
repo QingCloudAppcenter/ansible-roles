@@ -1,0 +1,18 @@
+---
+- name: runc vars
+  set_fact:
+    runc_version: "1.0.0-rc92"
+
+- name: install runc
+  include_role:
+    name: install-1.0.5
+  vars:
+    opts:
+      file_mode: '755'
+      pkg_name: runc
+      pkg_version: "{{ runc_version }}"
+      pkg_type: ''
+      pkg_url: https://github.com/opencontainers/runc/releases/download/v{{ runc_version }}/runc.amd64
+      bin_links:
+      - src: runc-{{ runc_version }}
+        dest: /usr/bin/runc
