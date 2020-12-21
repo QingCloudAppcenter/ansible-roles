@@ -3,7 +3,7 @@
   set_fact:
     download_base_url: https://download.docker.com/linux/ubuntu/dists/{{ ansible_distribution_release }}/pool/stable/amd64
     packages:
-    - containerd.io_{{ containerd_version }}-3_amd64.deb
+    - containerd.io_1.4.3-1_amd64.deb
     - docker-ce-cli_{{ docker_version }}~3-0~ubuntu-{{ ansible_distribution_release }}_amd64.deb
     - docker-ce_{{ docker_version }}~3-0~ubuntu-{{ ansible_distribution_release }}_amd64.deb
     dest_path: "{{ remote_path | d('/tmp') }}"
