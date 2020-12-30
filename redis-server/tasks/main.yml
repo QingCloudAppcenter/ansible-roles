@@ -59,7 +59,7 @@
   delegate_to: localhost
   run_once: True
 
-- name: make binaries
+- name: make binaries redis-{{ redis_version }}
   make:
     chdir: "{{ role_path }}/files/tmp/redis-{{ redis_version }}"
     params:
