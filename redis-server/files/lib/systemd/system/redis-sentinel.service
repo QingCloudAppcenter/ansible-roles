@@ -3,9 +3,10 @@ Description=Redis Sentinel
 After=network.target
 
 [Service]
-Type=notify
 User=redis
 Group=svc
+RuntimeDirectory=redis
+PIDFile=/var/run/redis/sentinel.pid
 WorkingDirectory=/tmp
 ExecStart=/opt/redis/current/redis-sentinel /data/redis/sentinel.conf
 Restart=always
