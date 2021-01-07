@@ -167,17 +167,17 @@ _checkSvc() {
   done
 }
 
-startSvc() {
+_startSvc() {
   systemctl start ${1%%/*}
 }
 
-stopSvc() {
+_stopSvc() {
   systemctl stop ${1%%/*}
 }
 
 restartSvc() {
-  stopSvc $1
-  startSvc $1
+  execute stopSvc $1
+  execute startSvc $1
 }
 
 maskSvc() {
@@ -237,7 +237,7 @@ _start() {
   isNodeInitialized || execute initNode
   local svc; for svc in $(getServices); do
     log "starting $svc ..."
-    startSvc $svc
+    execute startSvc $svc
   done
 }
 
@@ -258,7 +258,7 @@ _reload() {
     local svcs="${@:-$(getServices -a)}"
     local svc; for svc in $(echo $svcs | xargs -n1 | tac); do stopSvc $svc; done
     local svc; for svc in $svcs; do
-      if isSvcEnabled $svc; then startSvc $svc; fi
+      if isSvcEnabled $svc; then execute startSvc $svc; fi
     done
   else
     log "skipped as node is not initialized."
