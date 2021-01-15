@@ -181,7 +181,7 @@ restartSvc() {
 }
 
 maskSvc() {
-  stopSvc $1
+  execute stopSvc $1
   systemctl mask ${1%%/*}
 }
 
@@ -244,7 +244,7 @@ _start() {
 _stop() {
   local svc; for svc in $(getServices -a | xargs -n1 | tac); do
     log "stopping $svc ..."
-    stopSvc $svc
+    execute stopSvc $svc
   done
 }
 
@@ -256,7 +256,7 @@ _restart() {
 _reload() {
   if isNodeInitialized; then
     local svcs="${@:-$(getServices -a)}"
-    local svc; for svc in $(echo $svcs | xargs -n1 | tac); do stopSvc $svc; done
+    local svc; for svc in $(echo $svcs | xargs -n1 | tac); do execute stopSvc $svc; done
     local svc; for svc in $svcs; do
       if isSvcEnabled $svc; then execute startSvc $svc; fi
     done
