@@ -22,6 +22,21 @@
     chdir: /tmp/app-agent
     creates: /opt/qingcloud/app-agent/bin/confd
 
+- name: make logging files persistent
+  blockinfile:
+    path: /etc/init.d/confd
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    insertafter: "^start"
+    block: |
+      # indent
+        if [ ! -L "$PROG_PATH/log" ]; then
+          persistentDir=/data/app-agent/logs
+          mkdir -p $persistentDir
+          rsync -aAX $PROG_PATH/log/ $persistentDir/
+          rm -rf $PROG_PATH/log
+          ln -s $persistentDir $PROG_PATH/log
+        fi
+
 - name: adjust logrotate
   replace:
     path: /etc/logrotate.d/app-agent
