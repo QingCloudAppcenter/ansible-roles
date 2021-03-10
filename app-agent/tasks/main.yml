@@ -2,6 +2,8 @@
 - name: set up variables
   set_fact:
     app_agent_version: 1.0.6
+    transient_logging_dir: /opt/qingcloud/app-agent/log
+    persistent_logging_dir: /data/app-agent/logs
 
 - name: install packages
   include_role:
@@ -25,17 +27,23 @@
 - name: make logging files persistent
   blockinfile:
     path: /etc/init.d/confd
-    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    marker: "  # {mark} ANSIBLE MANAGED BLOCK"
     insertafter: "^start"
     block: |
       # indent
-        if [ ! -L "$PROG_PATH/log" ]; then
-          persistentDir=/data/app-agent/logs
-          mkdir -p $persistentDir
-          rsync -aAX $PROG_PATH/log/ $persistentDir/
-          rm -rf $PROG_PATH/log
-          ln -s $persistentDir $PROG_PATH/log
+        if [ ! -d {{ persistent_logging_dir }} ]; then
+          mkdir -p {{ persistent_logging_dir }}
+          if [ -d {{ transient_logging_dir }} && ! -L {{ transient_logging_dir }} ]; then
+            rsync -aAX {{ transient_logging_dir }}/ {{ persistent_logging_dir }}/
+          fi
         fi
+        rm -rf {{ transient_logging_dir }}
+        ln -snf {{persistent_logging_dir }} {{ transient_logging_dir }}
+
+- name: disable confd auto start
+  systemd:
+    name: confd
+    enabled: no
 
 - name: adjust logrotate
   replace:
