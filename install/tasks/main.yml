@@ -99,7 +99,7 @@
 - name: add bin path to PATH
   copy:
     dest: /etc/profile.d/{{ pkg_name }}-path.sh
-    content: PATH={{ dest_path | regex_replace('/*$', '') }}/{{ opts.bin_path }}:$PATH
+    content: PATH={{ '/opt/' + pkg_name + '/current' if dest_path == default_dest_dir else dest_path | regex_replace('/*$', '') }}/{{ opts.bin_path }}:$PATH
   when: opts.bin_path is defined
 
 - name: create bin symbolic links - {{ pkg_name }}
