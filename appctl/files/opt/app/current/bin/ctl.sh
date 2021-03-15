@@ -85,7 +85,8 @@ applyEnvFiles() {
 }
 
 applyRoleScripts() {
-  local f; for f in $(find /opt/app/current/bin/node/ -name $NODE_CTL.sh); do . $f; done
+  local fileNames=${NODE_CTL:-*-ctl}
+  local f; for f in $(find /opt/app/current/bin/node/ -name $fileNames.sh); do . $f; done
 }
 
 checkEnv() {
