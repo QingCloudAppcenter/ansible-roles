@@ -33,7 +33,7 @@ applyEnvs() {
 }
 
 applyScripts() {
-  local f; for f in $(find /opt/app/current/bin/node/ -name confd.sh); do . $f; done
+  local f; for f in $(find /opt/app/current/bin/node/ -name confd*.sh); do . $f; done
 }
 
 applyEnvs

@@ -12,9 +12,11 @@
     set -euo pipefail
 
     parentRolePath="{{ ansible_parent_role_paths[0] }}"
+    parentRoleName="{{ ansible_parent_role_names[0] }}"
     srcRootDir="$parentRolePath/files/etc/confd/templates"
     test -d "$srcRootDir" || exit 1
-    destDir=$parentRolePath/files/tmp/confd/templates
+
+    destDir={{ local_cache_path }}/$parentRoleName/confd/templates
     mkdir -p $destDir
     rm -rf $destDir/*
     for srcDir in $(ls -d $srcRootDir/*/); do
@@ -33,14 +35,14 @@
 
 - name: install
   copy:
-    src: "{{ ansible_parent_role_paths[0] }}/files/{{ path.src }}/"
+    src: "{{ path.src }}/"
     dest: /opt/app/current/conf/confd/{{ path.dest }}/
     owner: root
     group: root
   loop:
-  - src: etc/confd/conf.d
+  - src: "{{ ansible_parent_role_paths[0] }}/files/etc/confd/conf.d"
     dest: conf.d
-  - src: tmp/confd/templates
+  - src: "{{ local_cache_path }}/{{ ansible_parent_role_names[0] }}/confd/templates"
     dest: templates
   loop_control:
     loop_var: path
@@ -53,4 +55,4 @@
     state: link
   with_fileglob:
   - "{{ ansible_parent_role_paths[0] }}/files/etc/confd/conf.d/*"
-  - "{{ ansible_parent_role_paths[0] }}/files/tmp/confd/templates/*"
+  - "{{ local_cache_path }}/{{ ansible_parent_role_names[0] }}/confd/templates/*"
