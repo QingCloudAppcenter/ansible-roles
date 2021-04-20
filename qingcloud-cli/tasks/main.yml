@@ -25,11 +25,15 @@
       [easy_install]
       index_url = https://pypi.doubanio.com/simple
 
-- name: install
-  shell:
-    chdir: /tmp/qingcloud-cli-{{ qingcloud_cli_version }}
-    cmd: python3 setup.py install
-    creates: /usr/local/bin/qingcloud
+- name: install pip
+  apt:
+    name: python-pip
+    update_cache: yes
+
+- name: install qingcloud-cli
+  pip:
+    executable: pip
+    name: qingcloud-cli=={{ qingcloud_cli_version }}
 
 - name: set up mirror
   file:
