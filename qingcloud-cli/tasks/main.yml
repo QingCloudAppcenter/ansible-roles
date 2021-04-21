@@ -5,19 +5,6 @@
     state: present
     update_cache: yes
 
-- name: download
-  include_role:
-    name: install-1.0.5
-  vars:
-    opts:
-      pkg_name: qingcloud-cli
-      pkg_version: "{{ qingcloud_cli_version }}"
-      dest_path: /tmp/qingcloud-cli-{{ qingcloud_cli_version }}
-      pkg_type: tgz
-      pkg_url: https://github.com/yunify/qingcloud-cli/archive/{{ qingcloud_cli_version }}.tar.gz
-      extracts: yes
-      creates: setup.py
-
 - name: set up mirror
   copy:
     dest: ~/.pydistutils.cfg
