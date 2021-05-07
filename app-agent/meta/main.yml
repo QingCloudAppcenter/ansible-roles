@@ -11,4 +11,4 @@ galaxy_info:
   galaxy_tags: []
 
 dependencies:
-# https://qingcloudappcenter.github.io/ansible-roles/install-1.0.5.tar.gz
+  https://qingcloudappcenter.github.io/ansible-roles/install-1.0.6.tar.gz
