@@ -94,14 +94,39 @@ checkEnv() {
 }
 
 checkMounts() {
-  test -n "${DATA_MOUNTS+x}" || {
-    log "ERROR: DATA_MOUNTS variable is required to be set."
+  test -n "${MY_HYPER_TYPE}" || {
+    log "ERROR: MY_HYPER_TYPE variable is required to be set. "
     return 1
   }
-
-  local dataDir; for dataDir in $DATA_MOUNTS; do
-    grep -qs " $dataDir " /proc/mounts
-  done
+  test -n "${DATA_MOUNTS+x}" || {
+    log "ERROR: DATA_MOUNTS variable is required to be set. "
+    return 1
+  }
+  case $MY_HYPER_TYPE in
+  kvm)
+      local dataDir; for dataDir in $DATA_MOUNTS; do
+        grep -qs " $dataDir " /proc/mounts || {
+          log "ERROR: Failed to mount disk . "
+          return 1
+        }
+      done
+  ;;
+  lxc)
+      local dataDir; for dataDir in $DATA_MOUNTS; do
+        dataDir=$(echo $dataDir|tr -s [:space:])
+        if [ -d $dataDir ]; then
+	         : 
+       	else
+	         log "ERROR: $dataDir is not found in this container . "
+	         return 1
+       	fi
+      done
+  ;;
+  *)
+      log "ERROR: unrecognized hyper type: $MY_HYPER_TYPE. "
+      return 1
+  ;;
+  esac
 }
 
 getServices() {
