@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: docker
-  role_version: 1.0.8
+  role_version: 1.0.9
   author: Hongliang Wang
   description: installs docker
 
