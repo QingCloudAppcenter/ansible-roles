@@ -21,7 +21,7 @@
   pip:
     executable: pip
     name: qingcloud-cli
-    version: {{ qingcloud_cli_version }}
+    version: "{{ qingcloud_cli_version }}"
 
 - name: set up mirror
   file:
