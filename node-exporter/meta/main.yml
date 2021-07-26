@@ -2,7 +2,7 @@ galaxy_info:
   role_name: node-exporter
   role_version: 1.0.0
   author: duanduan yang
-  description: installs node_exporter
+  description: installs node-exporter
 
   license: Apache
 
