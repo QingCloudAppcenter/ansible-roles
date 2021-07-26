@@ -9,5 +9,5 @@
         rm -f /run/log/journal/*/*
         systemctl start systemd-journald
       fi
-  run_once: True
+  run_once: no
 
