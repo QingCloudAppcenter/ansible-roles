@@ -1,0 +1,66 @@
+---
+
+- name: copy files
+  copy:
+    src: "{{ role_path }}/files/opt/app/current/conf/{{ file.src }}"
+    dest: /{{ file.dest }}
+    directory_mode: yes
+  loop:
+    - src: systemd/node_exporter.service
+      dest: etc/systemd/system/
+  loop_control:
+    loop_var: file
+
+
+- name: Add the prometheus Service Group
+  group:
+    name: "prometheus"
+    state: present
+
+- name: Add the prometheus Service User
+  user:
+    name: "prometheus"
+    groups: "prometheus"
+    shell: /sbin/nologin
+    create_home: no
+    home: /var/lib/prometheus
+    append: yes
+    comment: "prometheus Service User"
+    state: present
+
+- name: mkdir  /usr/local/prometheus/node_exporter
+  file:
+    path:  /usr/local/prometheus/node_exporter
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: 0755
+
+#- name: Download node_exporter-0.18.1 reusable binaries locally
+#  get_url:
+#    url: "https://github.com/prometheus/node_exporter/releases/download/v0.18.1/{{ item }}.linux-amd64.tar.gz"
+#    dest: "files/tmp/{{ item }}.tgz"
+#  delegate_to: localhost
+#  with_items:
+#    - "node_exporter-0.18.1"
+
+- name: Extract node_exporter-0.18.1 binary
+  unarchive:
+    src: "files/tmp/{{ item }}.tgz"
+    dest: "/usr/local/prometheus/node_exporter/"
+    extra_opts: [ --strip-components=1 ]
+    owner: root
+    group: root
+  with_items:
+    - "node_exporter-0.18.1"
+
+
+- name: node_exporter auto start
+  systemd:
+    daemon_reload: yes
+    name: node_exporter
+    enabled: yes
+    state: started
+
+
+
