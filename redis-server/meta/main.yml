@@ -1,7 +1,7 @@
 galaxy_info:
   role_name: redis-server
-  role_version: 1.1.0
-  author: Hongliang Wang
+  role_version: 1.1.1
+  author: ShuBo An
   description: installs redis server
 
   license: Apache
