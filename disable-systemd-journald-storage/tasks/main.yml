@@ -1,0 +1,13 @@
+---
+- name: set Storage=none
+  shell:
+    cmd: |
+      confFile="/etc/systemd/journald.conf"
+      [ -f "$confFile" ] && /bin/echo -e "[Journal]\nStorage=none" > $confFile
+      if systemctl is-active systemd-journald ; then
+        systemctl stop systemd-journald
+        rm -f /run/log/journal/*/*
+        systemctl start systemd-journald
+      fi
+  run_once: True
+
