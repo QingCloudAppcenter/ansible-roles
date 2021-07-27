@@ -1,7 +1,7 @@
 galaxy_info:
   role_name: node-exporter
-  role_version: 1.0.0
-  author: duanduan yang
+  role_version: 1.2.0
+  author: Duanduan Yang
   description: installs node-exporter
 
   license: Apache
@@ -11,4 +11,3 @@ galaxy_info:
   galaxy_tags: []
 
 dependencies:
-# https://qingcloudappcenter.github.io/ansible-roles/xxx.tar.gz
