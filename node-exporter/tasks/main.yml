@@ -1,7 +1,7 @@
 ---
 - name: Node_exporter set var
   set_fact:
-    node_exporter_version: 1.2.0
+    node_exporter_version: 0.18.1
 
 - name: Copy files
   copy:
@@ -25,7 +25,7 @@
     groups: "prometheus"
     shell: /sbin/nologin
     create_home: no
-    home: /home/prometheus
+    home: /var/lib/prometheus
     append: yes
     comment: "prometheus Service User"
     state: present
@@ -52,7 +52,7 @@
   with_items:
     - "node_exporter-{{node_exporter_version}}"
 
-- name: Extract node_exporter  binary
+- name: Extract node_exporter binary
   unarchive:
     src: "{{ role_path }}/files/tmp/{{ item }}.tgz"
     dest: "/opt/prometheus/node_exporter/"
@@ -62,7 +62,7 @@
   with_items:
     - "node_exporter-{{node_exporter_version}}"
 
-- name: Node_exporter auto start
+- name: Setup node_exporter auto start
   systemd:
     daemon_reload: yes
     name: node_exporter

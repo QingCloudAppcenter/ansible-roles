@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: node-exporter
-  role_version: 1.2.0
+  role_version: 0.18.1
   author: Duanduan Yang
   description: installs node-exporter
 
