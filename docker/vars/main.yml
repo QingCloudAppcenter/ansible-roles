@@ -1,2 +1,2 @@
-docker_version: 20.10.6
-containerd_version: 1.4.6
+docker_version: 20.10.8
+containerd_version: 1.4.9
