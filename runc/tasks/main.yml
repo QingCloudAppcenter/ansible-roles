@@ -1,7 +1,7 @@
 ---
 - name: runc vars
   set_fact:
-    runc_version: "1.0.0-rc92"
+    runc_version: "1.1.0"
 
 - name: install runc
   include_role:
