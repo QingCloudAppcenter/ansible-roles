@@ -73,6 +73,7 @@ roles:
 - docker-1.0.0.tar.gz
 - docker-1.0.1.tar.gz
 - docker-1.0.10.tar.gz
+- docker-1.0.11.tar.gz
 - docker-1.0.2.tar.gz
 - docker-1.0.3.tar.gz
 - docker-1.0.4.tar.gz
@@ -154,6 +155,7 @@ roles:
 - redis-server-1.1.0.tar.gz
 - redis-server-1.1.1.tar.gz
 - runc-1.0.0.tar.gz
+- runc-1.0.1.tar.gz
 - set-passwd-1.0.0.tar.gz
 - update-apt-sources-1.0.0.tar.gz
 - yq-1.0.0.tar.gz
