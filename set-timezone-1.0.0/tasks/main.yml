@@ -1,0 +1,9 @@
+---
+- name: set vars
+  set_fact:
+    timezone: "{{ timezone | d(default_timezone) }}"
+
+- name: Set timezone 
+  community.general.timezone:
+    name: "{{ timezone }}"
+
