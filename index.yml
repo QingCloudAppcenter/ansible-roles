@@ -74,6 +74,7 @@ roles:
 - docker-1.0.1.tar.gz
 - docker-1.0.10.tar.gz
 - docker-1.0.11.tar.gz
+- docker-1.0.12.tar.gz
 - docker-1.0.2.tar.gz
 - docker-1.0.3.tar.gz
 - docker-1.0.4.tar.gz
